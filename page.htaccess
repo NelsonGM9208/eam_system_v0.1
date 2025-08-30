@@ -1,0 +1,10 @@
+DirectoryIndex login.php
+
+RewriteEngine On
+
+# Exclude login.php, CSS, JS, images, etc.
+RewriteCond %{REQUEST_URI} !^/login\.php$
+RewriteCond %{REQUEST_URI} !\.(css|js|png|jpg|jpeg|gif|ico|svg)$
+RewriteRule ^.*$ /login.php [R=302,L]
+
+Options -Indexes
