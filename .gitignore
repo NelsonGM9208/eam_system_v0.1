@@ -1,0 +1,25 @@
+# Composer vendor directory
+/vendor/
+
+# Composer lock file (optional)
+# /composer.lock
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE/editor files
+*.idea/
+*.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# PHP logs
+*.log
+
+# Node modules (if you ever use Node.js)
+node_modules/
+
+# Other temporary files
+*.tmp
+*.swp
