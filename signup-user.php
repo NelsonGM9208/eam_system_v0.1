@@ -6,6 +6,7 @@
     <title>Signup Form</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/auth_styles.css">
+    <link rel="stylesheet" href="assets/css/includes.css">
 </head>
 <body>
     <div class="container">
@@ -47,11 +48,19 @@
                     </div>
                     <div class="form-group">
                             <select class="form-control" id="gender" name="gender" required>
-                                <option value="" disabled selected>Select Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                <option value="" disabled <?php echo empty($gender) ? 'selected' : ''; ?>>Select Gender</option>
+                                <option value="Male" <?php echo $gender === 'Male' ? 'selected' : ''; ?>>Male</option>
+                                <option value="Female" <?php echo $gender === 'Female' ? 'selected' : ''; ?>>Female</option>
                             </select>
                         </div>
+                    <div class="form-group">
+                        <select class="form-control" id="role" name="role" required>
+                            <option value="" disabled <?php echo empty($role) ? 'selected' : ''; ?>>Select Role</option>
+                            <option value="student" <?php echo $role === 'student' ? 'selected' : ''; ?>>Student</option>
+                            <option value="teacher" <?php echo $role === 'teacher' ? 'selected' : ''; ?>>Teacher</option>
+                            <option value="sslg" <?php echo $role === 'sslg' ? 'selected' : ''; ?>>SSLG</option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <input class="form-control" type="email" name="email" placeholder="Email Address" required value="<?php echo $email ?>">
                     </div>
@@ -70,5 +79,8 @@
         </div>
     </div>
     
+    <div class="mt-auto">
+        <?php include "includes/header.php"; ?>
+    </div>
 </body>
 </html>

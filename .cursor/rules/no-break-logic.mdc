@@ -1,0 +1,5 @@
+---
+description: Do not break the logic of the existing codes or functionalities
+globs: Do what is asked without breaking existing logics
+alwaysApply: true
+---

@@ -12,6 +12,7 @@ if($email == false){
     <title>Create a New Password</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/auth_styles.css">
+    <link rel="stylesheet" href="assets/css/includes.css">
 </head>
 <body>
     <div class="container">
@@ -55,5 +56,8 @@ if($email == false){
         </div>
     </div>
     
+    <div class="mt-auto">
+        <?php include "includes/header.php"; ?>
+    </div>
 </body>
 </html>

@@ -1,6 +1,9 @@
 # Composer vendor directory
 /vendor/
 
+#config files
+/config/
+
 # Composer lock file (optional)
 # /composer.lock
 

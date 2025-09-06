@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL Construction Test</title>
+</head>
+<body>
+    <h1>URL Construction Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        // Simulate the current URL structure
+        const currentUrl = 'http://localhost/eam_system_v0.1.1/pages/admin.php?page=users';
+        
+        // Test the URL construction logic from script.js
+        function testUrlConstruction(page) {
+            const fragmentUrl = new URL(`includes/admin/${page}.php`, currentUrl).toString();
+            return fragmentUrl;
+        }
+        
+        // Test different pages
+        const pages = ['users', 'pending_users', 'logs', 'events'];
+        const results = document.getElementById('results');
+        
+        pages.forEach(page => {
+            const url = testUrlConstruction(page);
+            results.innerHTML += `<p><strong>${page}:</strong> ${url}</p>`;
+        });
+        
+        // Also test what happens with different base URLs
+        results.innerHTML += '<h2>Different Base URLs:</h2>';
+        
+        const baseUrls = [
+            'http://localhost/eam_system_v0.1.1/pages/admin.php',
+            'http://localhost/eam_system_v0.1.1/pages/admin.php?page=users',
+            'http://localhost/eam_system_v0.1.1/'
+        ];
+        
+        baseUrls.forEach(baseUrl => {
+            results.innerHTML += `<h3>Base: ${baseUrl}</h3>`;
+            pages.forEach(page => {
+                const url = new URL(`includes/admin/${page}.php`, baseUrl).toString();
+                results.innerHTML += `<p><strong>${page}:</strong> ${url}</p>`;
+            });
+        });
+    </script>
+</body>
+</html>
