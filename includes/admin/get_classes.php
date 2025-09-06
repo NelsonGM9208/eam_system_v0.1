@@ -1,4 +1,5 @@
 <?php
+if (!defined('IN_APP')) { define('IN_APP', true); }
 require_once __DIR__ . "/../../config/database.php";
 
 // Check database connection
@@ -8,7 +9,7 @@ if (!isset($con) || !$con) {
 }
 
 // Get all sections/classes
-$query = "SELECT section_id, section_name, grade_level FROM section ORDER BY grade_level, section_name";
+$query = "SELECT section_id, section, grade FROM section ORDER BY grade, section";
 $result = mysqli_query($con, $query);
 
 if (!$result) {
@@ -22,7 +23,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     echo '<div class="form-check">';
     echo '<input class="form-check-input" type="checkbox" value="' . $row['section_id'] . '" id="class_' . $row['section_id'] . '">';
     echo '<label class="form-check-label" for="class_' . $row['section_id'] . '">';
-    echo 'Grade ' . $row['grade_level'] . ' - ' . htmlspecialchars($row['section_name']);
+    echo 'Grade ' . $row['grade'] . ' - ' . htmlspecialchars($row['section']);
     echo '</label>';
     echo '</div>';
     echo '</div>';
