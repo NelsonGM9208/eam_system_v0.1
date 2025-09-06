@@ -11,7 +11,7 @@
 
   foreach ($cards as $card):
   ?>
-    <div class="col-md-3 col-sm-6 mb-3"><!-- added mb-3 here -->
+    <div class="col-md-3 col-sm-6 col-12 mb-3"><!-- added mb-3 here -->
       <div class="card border-<?= $card['color'] ?> shadow-sm h-100">
         <div class="card-body d-flex flex-column justify-content-between">
           <div class="d-flex align-items-center mb-3">

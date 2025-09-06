@@ -42,11 +42,34 @@ if(isset($_POST['signup'])){
     $email = mysqli_real_escape_string($con, $_POST['email']);
     $password = mysqli_real_escape_string($con, $_POST['password']);
     $cpassword = mysqli_real_escape_string($con, $_POST['cpassword']);
+    
+    // Role-specific fields
+    $lrn = isset($_POST['lrn']) ? mysqli_real_escape_string($con, $_POST['lrn']) : '';
+    $mis_id = isset($_POST['mis_id']) ? mysqli_real_escape_string($con, $_POST['mis_id']) : '';
+    $course = isset($_POST['course']) ? mysqli_real_escape_string($con, $_POST['course']) : '';
     if($password !== $cpassword){
         $errors['password'] = "Confirm password not matched!";
     }
     if(empty($role)){
         $errors['role'] = "Please select a role!";
+    }
+    
+    // Validate role-specific fields
+    if($role === 'student'){
+        if(empty($lrn)){
+            $errors['lrn'] = "LRN is required for students!";
+        } elseif(strlen($lrn) !== 12){
+            $errors['lrn'] = "LRN must be exactly 12 characters!";
+        }
+        if(empty($mis_id)){
+            $errors['mis_id'] = "MIS ID is required for students!";
+        } elseif(strlen($mis_id) !== 6){
+            $errors['mis_id'] = "MIS ID must be exactly 6 characters!";
+        }
+    } elseif($role === 'teacher'){
+        if(empty($course)){
+            $errors['course'] = "Course is required for teachers!";
+        }
     }
     $email_check = "SELECT * FROM users WHERE email = ?";
     $stmt = $con->prepare($email_check);
@@ -60,23 +83,53 @@ if(isset($_POST['signup'])){
         $encpass = password_hash($password, PASSWORD_BCRYPT);
         $code = rand(111111, 999999);
         $status = "notverified";
-        $insert_data = "INSERT INTO users (email, password, code, role, verification_status, firstname, lastname, gender)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $con->prepare($insert_data);
-        $stmt->bind_param("ssisssss", $email, $encpass, $code, $role, $status, $fname, $lname, $gender);
-        $data_check = $stmt->execute();
-        if($data_check){
-            if(sendVerificationEmail($email, $fname, $code)){
-                $info = "We've sent a verification code to your email - $email";
-                $_SESSION['info'] = $info;
-                $_SESSION['email'] = $email;
-                $_SESSION['password'] = $password;
-                header('location: user-otp.php');
-                exit();
+            
+        // Start transaction
+        $con->begin_transaction();
+        
+        try {
+            // Insert into users table
+            $insert_data = "INSERT INTO users (email, password, code, role, verification_status, firstname, lastname, gender)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $con->prepare($insert_data);
+            $stmt->bind_param("ssisssss", $email, $encpass, $code, $role, $status, $fname, $lname, $gender);
+            $data_check = $stmt->execute();
+            
+            if($data_check){
+                $user_id = $con->insert_id;
+                
+                // Insert into role-specific table
+                if($role === 'student'){
+                    $insert_student = "INSERT INTO students (student_id, lrn, mis_id) VALUES (?, ?, ?)";
+                    $stmt2 = $con->prepare($insert_student);
+                    $stmt2->bind_param("iss", $user_id, $lrn, $mis_id);
+                    $stmt2->execute();
+                } elseif($role === 'teacher'){
+                    $insert_teacher = "INSERT INTO teacher (teacher_id, course) VALUES (?, ?)";
+                    $stmt2 = $con->prepare($insert_teacher);
+                    $stmt2->bind_param("is", $user_id, $course);
+                    $stmt2->execute();
+                }
+                
+                // Commit transaction
+                $con->commit();
+                
+                if(sendVerificationEmail($email, $fname, $code)){
+                    $info = "We've sent a verification code to your email - $email";
+                    $_SESSION['info'] = $info;
+                    $_SESSION['email'] = $email;
+                    $_SESSION['password'] = $password;
+                    header('location: user-otp.php');
+                    exit();
+                }else{
+                    $errors['otp-error'] = "Failed while sending code!";
+                }
             }else{
-                $errors['otp-error'] = "Failed while sending code!";
+                $con->rollback();
+                $errors['db-error'] = "Failed while inserting data into database!";
             }
-        }else{
+        } catch (Exception $e) {
+            $con->rollback();
             $errors['db-error'] = "Failed while inserting data into database!";
         }
     }

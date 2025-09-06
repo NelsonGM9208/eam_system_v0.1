@@ -41,14 +41,14 @@ $end_time = date('H:i', strtotime($event['end_time']));
     <input type="hidden" name="id" value="<?php echo $event['event_id']; ?>">
     
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-6 col-sm-12 mb-3">
         <div class="form-group">
           <label for="editEventTitle">Event Title *</label>
           <input type="text" class="form-control" id="editEventTitle" name="title" 
                  value="<?php echo htmlspecialchars($event['title']); ?>" required>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6 col-sm-12 mb-3">
         <div class="form-group">
           <label for="editEventType">Event Type *</label>
           <select class="form-control" id="editEventType" name="event_type" required>
@@ -66,21 +66,21 @@ $end_time = date('H:i', strtotime($event['end_time']));
     </div>
     
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-6 col-sm-12 mb-3">
         <div class="form-group">
           <label for="editEventDate">Event Date *</label>
           <input type="date" class="form-control" id="editEventDate" name="event_date" 
                  value="<?php echo $event_date; ?>" required>
         </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-3 col-sm-6 mb-3">
         <div class="form-group">
           <label for="editStartTime">Start Time *</label>
           <input type="time" class="form-control" id="editStartTime" name="start_time" 
                  value="<?php echo $start_time; ?>" required>
         </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-3 col-sm-6 mb-3">
         <div class="form-group">
           <label for="editEndTime">End Time *</label>
           <input type="time" class="form-control" id="editEndTime" name="end_time" 
@@ -90,14 +90,14 @@ $end_time = date('H:i', strtotime($event['end_time']));
     </div>
     
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-8 col-sm-12 mb-3">
         <div class="form-group">
           <label for="editEventLocation">Location *</label>
           <input type="text" class="form-control" id="editEventLocation" name="location" 
                  value="<?php echo htmlspecialchars($event['location']); ?>" required>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4 col-sm-12 mb-3">
         <div class="form-group">
           <label for="editEventStatus">Status *</label>
           <select class="form-control" id="editEventStatus" name="event_status" required>
@@ -123,6 +123,12 @@ $end_time = date('H:i', strtotime($event['end_time']));
       <div class="row" id="editClassCheckboxes">
         <!-- Classes will be loaded dynamically -->
       </div>
+    </div>
+    
+    <!-- Modal Footer with Save/Cancel Buttons -->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      <button type="submit" class="btn btn-primary" form="editEventForm">Save Changes</button>
     </div>
 </form>
 

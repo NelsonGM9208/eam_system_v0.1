@@ -19,7 +19,7 @@ function initUsers() {
     }
     
     // Only initialize if we're on the users page or dashboard (which includes usersTBL)
-    const currentPage = new URLSearchParams(window.location.search).get('page');
+    const currentPage = new URLSearchParams(window.location.search).get('page') || 'dashboard';
     console.log('Current page detected:', currentPage);
     if (currentPage !== 'users' && currentPage !== 'dashboard') {
         console.log('Not on users or dashboard page, skipping initialization');
@@ -233,8 +233,8 @@ if (typeof window.onFragmentLoaded === 'function') {
     const originalHook = window.onFragmentLoaded;
     window.onFragmentLoaded = function(page) {
         originalHook(page);
-        if (page === 'users') {
-            console.log('Users page loaded via AJAX, initializing...');
+        if (page === 'users' || page === 'dashboard') {
+            console.log('Users or Dashboard page loaded via AJAX, initializing...');
             // Reset initialization state and initialize
             resetUsersInit();
             initUsers();
@@ -243,8 +243,8 @@ if (typeof window.onFragmentLoaded === 'function') {
 } else {
     // If no hook exists, create it
     window.onFragmentLoaded = function(page) {
-        if (page === 'users') {
-            console.log('Users page loaded via AJAX, initializing...');
+        if (page === 'users' || page === 'dashboard') {
+            console.log('Users or Dashboard page loaded via AJAX, initializing...');
             // Reset initialization state and initialize
             resetUsersInit();
             initUsers();
@@ -253,10 +253,5 @@ if (typeof window.onFragmentLoaded === 'function') {
 }
 
 // Also initialize on DOM ready if we're already on the users page or dashboard
-$(document).ready(function() {
-    const currentPage = new URLSearchParams(window.location.search).get('page');
-    if (currentPage === 'users') {
-        console.log('DOM ready - on users page, initializing...');
-        initUsers();
-    }
-});
+// Note: Initialization is now handled by the global initializePageSpecificJS() function in script.js
+// This prevents duplicate initialization and ensures proper loading after login redirects

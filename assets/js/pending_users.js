@@ -40,7 +40,7 @@ function initPendingUsers() {
     console.log('Initializing pending users...');
     
     // Only initialize if we're actually on the pending users page
-    const currentPage = new URLSearchParams(window.location.search).get('page');
+    const currentPage = new URLSearchParams(window.location.search).get('page') || 'dashboard';
     if (currentPage !== 'pending_users') {
         console.log('Not on pending users page, skipping initialization');
         return;
@@ -785,13 +785,8 @@ if (typeof window.onFragmentLoaded === 'function') {
 }
 
 // Also initialize on DOM ready if we're already on the pending users page
-$(document).ready(function() {
-    const currentPage = new URLSearchParams(window.location.search).get('page');
-    if (currentPage === 'pending_users') {
-        console.log('DOM ready - on pending users page, initializing...');
-        initPendingUsers();
-    }
-});
+// Note: Initialization is now handled by the global initializePageSpecificJS() function in script.js
+// This prevents duplicate initialization and ensures proper loading after login redirects
 
 // GLOBAL FUNCTION - Can be called from anywhere to force initialization
 window.forcePendingUsersInit = function() {

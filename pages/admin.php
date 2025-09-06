@@ -60,6 +60,7 @@ include '../config/auth.php';
   <script src="../assets/js/dashboard.js?v=<?php echo time(); ?>"></script>
   <script src="../assets/js/pending_users.js?v=<?php echo time(); ?>"></script>
   <script src="../assets/js/users.js?v=<?php echo time(); ?>"></script>
+  <script src="../assets/js/classes.js?v=<?php echo time(); ?>"></script>
 </body>
 
 </html>

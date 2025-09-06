@@ -17,7 +17,7 @@ function initDashboard() {
     }
     
     // Initialize if we're on dashboard page or events page (since eventsTBL is used in both)
-    const currentPage = new URLSearchParams(window.location.search).get('page');
+    const currentPage = new URLSearchParams(window.location.search).get('page') || 'dashboard';
     if (currentPage !== 'dashboard' && currentPage !== 'events') {
         console.log('Not on dashboard or events page, skipping initialization');
         return;
@@ -340,10 +340,5 @@ if (typeof window.onFragmentLoaded === 'function') {
 }
 
 // Also initialize on DOM ready if we're already on the dashboard or events page
-$(document).ready(function() {
-    const currentPage = new URLSearchParams(window.location.search).get('page');
-    if (currentPage === 'dashboard' || currentPage === 'events' || currentPage === null || currentPage === '') {
-        console.log('DOM ready - on dashboard or events page, initializing...');
-        initDashboard();
-    }
-});
+// Note: Initialization is now handled by the global initializePageSpecificJS() function in script.js
+// This prevents duplicate initialization and ensures proper loading after login redirects

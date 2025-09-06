@@ -46,7 +46,7 @@ if (!$users) {
     <div class="card-body">
         <!-- Search and Filter Section -->
         <div class="row mb-3">
-            <div class="col-md-4">
+            <div class="col-md-4 col-sm-12 mb-2">
                 <div class="input-group">
                     <input type="text" class="form-control" id="userSearch" placeholder="Search users...">
                     <div class="input-group-append">
@@ -56,7 +56,7 @@ if (!$users) {
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-6 mb-2">
                 <select class="form-control" id="roleFilter">
                     <option value="">All Roles</option>
                     <option value="student">Student</option>
@@ -65,7 +65,7 @@ if (!$users) {
                     <option value="admin">Admin</option>
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-6 mb-2">
                 <select class="form-control" id="statusFilter">
                     <option value="">All Status</option>
                     <option value="approved">Approved</option>
@@ -73,8 +73,8 @@ if (!$users) {
                     <option value="rejected">Rejected</option>
                 </select>
             </div>
-            <div class="col-md-2">
-                <button type="button" class="btn btn-outline-secondary btn-sm" id="clearFilters">
+            <div class="col-md-2 col-sm-12 mb-2">
+                <button type="button" class="btn btn-outline-secondary btn-sm w-100" id="clearFilters">
                     <i class="bx bx-x"></i> Clear
                 </button>
             </div>

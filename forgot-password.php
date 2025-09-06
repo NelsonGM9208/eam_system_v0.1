@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Forgot Password</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/auth_styles.css">
@@ -11,7 +12,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-md-4 offset-md-4 form">
+            <div class="col-md-4 offset-md-4 col-sm-8 offset-sm-2 col-12 form">
                 <form action="forgot-password.php" method="POST" autocomplete="">
                     <h2 class="text-center">Forgot Password</h2>
                     <p class="text-center">Enter your email address</p>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 06, 2025 at 09:37 AM
+-- Generation Time: Sep 06, 2025 at 04:09 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -82,7 +82,7 @@ CREATE TABLE `events` (
 --
 
 INSERT INTO `events` (`event_id`, `title`, `event_description`, `event_date`, `start_time`, `end_time`, `location`, `event_type`, `event_status`, `created_at`, `created_by`, `creator_role`, `updated_by`, `updated_at`, `abs_penalty`, `approval_status`) VALUES
-(3, 'New', 'New', '2025-09-06', '15:22:00', '20:23:00', 'Sagbayan Gymnasium', 'Exclusive', 'Upcoming', '2025-09-06 05:23:34', 3, 'admin', 3, '2025-09-06 05:24:51', 90, 'Pending');
+(3, 'New', 'New One', '2025-09-06', '15:22:00', '20:23:00', 'Sagbayan Gymnasium', 'Exclusive', 'Upcoming', '2025-09-06 05:23:34', 3, 'admin', 3, '2025-09-06 09:44:05', 90, 'Approved');
 
 -- --------------------------------------------------------
 
@@ -163,6 +163,13 @@ CREATE TABLE `section` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `section`
+--
+
+INSERT INTO `section` (`section_id`, `grade`, `section`, `description`, `teacher_id`, `created_at`, `updated_at`) VALUES
+(1, '12', 'ICT', 'TVL - ICT', 16, '2025-09-06 14:07:18', '2025-09-06 14:07:18');
+
 -- --------------------------------------------------------
 
 --
@@ -175,13 +182,6 @@ CREATE TABLE `students` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `mis_id` char(6) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `students`
---
-
-INSERT INTO `students` (`student_id`, `lrn`, `created_at`, `mis_id`) VALUES
-(4, '118398140001', '2025-09-02 14:56:29', '123456');
 
 -- --------------------------------------------------------
 
@@ -199,8 +199,7 @@ CREATE TABLE `teacher` (
 --
 
 INSERT INTO `teacher` (`teacher_id`, `course`) VALUES
-(7, '12-Philosophy'),
-(12, '12-Philosophy');
+(16, '12-Philosophy');
 
 -- --------------------------------------------------------
 
@@ -231,11 +230,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `email`, `password`, `role`, `profile_photo`, `created_at`, `updated_at`, `status`, `code`, `verification_status`, `firstname`, `lastname`, `gender`, `updated_by`) VALUES
 (3, 'nherrera@sanagustinnhs.net', '$2y$10$N/2o2bjkkrjeU6vRo7q6SOwGhXN/tz7jrWO7NB8aj4V0SfB6lcLRO', 'admin', NULL, '2025-08-30 05:39:57', '2025-09-02 14:50:25', 'Approved', 0, 'verified', 'Nelson', 'Herrera', 'Male', 0),
-(4, 'hvitorillo@sanagustinnhs.net', '$2y$10$JPPyWmb9OuyryYM.TzBtteVs/KCSGfPYHP5q3HmmmcZIMJ1nG.H2u', 'student', NULL, '2025-08-30 07:18:21', '2025-09-06 05:25:45', 'Approved', 0, 'verified', 'Hansy', 'Vitorillo', 'Male', 3),
-(7, 'dquijano@sanagustinnhs.net', '$2y$10$y6zk8ciy9VKmH3IEyIBwlu37JoRZ.HCGEEAT8CfCNLohnUucOHxly', 'teacher', NULL, '2025-08-30 09:54:19', '2025-09-02 14:46:28', 'Approved', 0, 'verified', 'Dionne', 'Quijano', 'Male', 0),
-(10, 'ddionsay@sanagustinnhs.net', '$2y$10$By01.Ssi0lRa1yQNeE/0de92aQHJmmFteKIub70FAhC4D./FvtTrC', 'sslg', NULL, '2025-09-02 23:44:28', '2025-09-06 05:56:28', 'Approved', 0, 'verified', 'Dennis', 'Dionsay', 'Male', 3),
-(12, 'nelsonherrera920815@gmail.com', '$2y$10$hPJwcVxnR2FBhhhwoFY5LufxkOs2atC3EMeEPIaC5yAQEJhpqOVXm', 'teacher', NULL, '2025-09-03 11:51:02', '2025-09-06 06:54:43', 'Approved', 0, 'verified', 'Can\\\\\\\'t Get', 'OutOfMind', 'Male', 3),
-(13, 'pr1researchers@gmail.com', '$2y$10$/GVwIb3WUhVrbf2inAdQsenSAEccAaO0Cil5Gm6qeak/WN0nTGrTS', 'sslg', NULL, '2025-09-06 03:06:33', '2025-09-06 05:26:16', 'Approved', 0, 'verified', 'Richs', 'Guy', 'Male', 3);
+(16, 'pr1researchers@gmail.com', '$2y$10$9TqGrd.kBRZuaW7JKC3fYOA85jNz/..Yo6vO2qEAFwPDgNgTJVwa.', 'teacher', NULL, '2025-09-06 09:02:08', '2025-09-06 11:47:00', 'Approved', 0, 'verified', 'John', 'Doe', 'Male', 3);
 
 --
 -- Indexes for dumped tables
@@ -363,13 +358,13 @@ ALTER TABLE `notification`
 -- AUTO_INCREMENT for table `section`
 --
 ALTER TABLE `section`
-  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Constraints for dumped tables

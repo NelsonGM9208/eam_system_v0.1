@@ -6,11 +6,90 @@ const sidebarOpen = document.querySelector("#sidebarOpen");
 const sidebarClose = document.querySelector(".collapse_sidebar");
 const sidebarExpand = document.querySelector(".expand_sidebar");
 const navLinks = document.querySelectorAll('.nav_link'); // Getting all sidebar links
+const navbar = document.querySelector('.navbar'); // Get navbar for fade effect
+
+// Debug: Check if elements are found
+console.log('Sidebar element:', sidebar);
+console.log('SidebarOpen element:', sidebarOpen);
+console.log('Navbar element:', navbar);
+
+// Initialize sidebar state for mobile
+function initializeSidebar() {
+  if (window.innerWidth <= 768) {
+    // On mobile, start with sidebar closed
+    if (sidebar && !sidebar.classList.contains('close')) {
+      sidebar.classList.add('close');
+      console.log('Added close class to sidebar for mobile');
+    }
+  } else {
+    // On desktop, start with sidebar open
+    if (sidebar && sidebar.classList.contains('close')) {
+      sidebar.classList.remove('close');
+      console.log('Removed close class from sidebar for desktop');
+    }
+  }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', initializeSidebar);
+
+// Re-initialize on window resize
+window.addEventListener('resize', initializeSidebar);
+
+// Header fade on scroll functionality
+let lastScrollTop = 0;
+let scrollTimeout;
+
+function handleScroll() {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  
+  // Clear existing timeout
+  clearTimeout(scrollTimeout);
+  
+  // If at the top, always show header
+  if (scrollTop <= 10) {
+    navbar.classList.remove('fade-out');
+    return;
+  }
+  
+  // If scrolling down, fade out header
+  if (scrollTop > lastScrollTop && scrollTop > 100) {
+    navbar.classList.add('fade-out');
+  } 
+  // If scrolling up, show header
+  else if (scrollTop < lastScrollTop) {
+    navbar.classList.remove('fade-out');
+  }
+  
+  lastScrollTop = scrollTop;
+  
+  // Set timeout to show header when idle
+  scrollTimeout = setTimeout(() => {
+    navbar.classList.remove('fade-out');
+  }, 1500); // Show header after 1.5 seconds of no scrolling
+}
+
+// Add scroll event listener
+window.addEventListener('scroll', handleScroll, { passive: true });
 
 // Sidebar open/close functionality
 sidebarOpen.addEventListener("click", () => {
+  console.log('Hamburger menu clicked!');
+  console.log('Current sidebar classes:', sidebar.className);
   sidebar.classList.toggle("close");
+  console.log('After toggle - sidebar classes:', sidebar.className);
+  console.log('Is mobile?', window.innerWidth <= 768);
 });
+
+// Close sidebar when clicking on backdrop (mobile)
+document.addEventListener('click', (e) => {
+  if (window.innerWidth <= 768 && !sidebar.classList.contains('close')) {
+    if (!sidebar.contains(e.target) && !sidebarOpen.contains(e.target)) {
+      sidebar.classList.add('close');
+    }
+  }
+});
+
 sidebarClose.addEventListener("click", () => {
   sidebar.classList.add("close", "hoverable");
 });
@@ -263,5 +342,54 @@ document.addEventListener("DOMContentLoaded", () => {
     body.classList.add("dark");
     darkLight.classList.replace("bx-sun", "bx-moon");
   }
+  
+  // Initialize page-specific functionality on initial load
+  initializePageSpecificJS();
 });
+
+// Global function to initialize page-specific JavaScript
+function initializePageSpecificJS() {
+  console.log('Initializing page-specific JavaScript...');
+  const currentPage = new URLSearchParams(window.location.search).get('page') || 'dashboard';
+  console.log('Current page detected:', currentPage);
+  
+  // Initialize based on current page
+  switch(currentPage) {
+    case 'dashboard':
+      console.log('Initializing dashboard functionality...');
+      if (typeof initDashboard === 'function') {
+        initDashboard();
+      }
+      if (typeof initUsers === 'function') {
+        initUsers();
+      }
+      break;
+    case 'users':
+      console.log('Initializing users functionality...');
+      if (typeof initUsers === 'function') {
+        initUsers();
+      }
+      break;
+    case 'pending_users':
+      console.log('Initializing pending users functionality...');
+      if (typeof initPendingUsers === 'function') {
+        initPendingUsers();
+      }
+      break;
+    case 'classes':
+      console.log('Initializing classes functionality...');
+      if (typeof initClasses === 'function') {
+        initClasses();
+      }
+      break;
+    case 'events':
+      console.log('Initializing events functionality...');
+      if (typeof initDashboard === 'function') {
+        initDashboard();
+      }
+      break;
+    default:
+      console.log('No specific initialization needed for page:', currentPage);
+  }
+}
 

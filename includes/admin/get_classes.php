@@ -19,7 +19,7 @@ if (!$result) {
 
 echo '<div class="row">';
 while ($row = mysqli_fetch_assoc($result)) {
-    echo '<div class="col-md-6 mb-2">';
+    echo '<div class="col-md-6 col-sm-12 mb-2">';
     echo '<div class="form-check">';
     echo '<input class="form-check-input" type="checkbox" value="' . $row['section_id'] . '" id="class_' . $row['section_id'] . '">';
     echo '<label class="form-check-label" for="class_' . $row['section_id'] . '">';
@@ -31,6 +31,6 @@ while ($row = mysqli_fetch_assoc($result)) {
 echo '</div>';
 
 if (mysqli_num_rows($result) === 0) {
-    echo '<div class="alert alert-info">No classes found.</div>';
+    echo '<div class="col-12"><p class="text-muted text-center py-3"><i class="bx bx-info-circle"></i> No classes found.</p></div>';
 }
 ?>

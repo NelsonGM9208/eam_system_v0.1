@@ -1,3 +1,5 @@
 ---
+description: Just answer the question do not change codebase
+globs: 
 alwaysApply: false
 ---

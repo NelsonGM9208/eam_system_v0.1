@@ -59,7 +59,7 @@ if (!isset($offset)) {
         <!-- Search and Filter Section -->
         <?php if ($tableConfig['showCheckboxes'] || $tableConfig['bulkActions']): ?>
         <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-12 mb-2">
                 <div class="input-group">
                     <input type="text" class="form-control" id="userSearch" placeholder="<?php echo htmlspecialchars($tableConfig['searchPlaceholder']); ?>">
                     <div class="input-group-append">
@@ -69,7 +69,7 @@ if (!isset($offset)) {
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-6 mb-2">
                 <select class="form-control" id="roleFilter">
                     <option value="">All Roles</option>
                     <option value="student">Student</option>
@@ -78,9 +78,9 @@ if (!isset($offset)) {
                     <option value="admin">Admin</option>
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-6 mb-2">
                 <?php if ($tableConfig['bulkActions']): ?>
-                <button type="button" class="btn btn-success btn-sm" id="bulkActionBtn" disabled>
+                <button type="button" class="btn btn-success btn-sm w-100" id="bulkActionBtn" disabled>
                     <i class="bx bx-check-double"></i> Approve All
                 </button>
                 <?php endif; ?>

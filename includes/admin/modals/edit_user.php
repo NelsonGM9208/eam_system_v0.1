@@ -127,6 +127,15 @@ if ($user['role'] === 'student') {
              placeholder="Enter course or subject">
     </div>
     
+    <!-- Status (Read-only) -->
+    <div class="form-group">
+      <label for="status">Account Status</label>
+      <input type="text" class="form-control" id="status" name="status" 
+             value="<?php echo htmlspecialchars($user['status'] ?? 'Pending'); ?>" 
+             readonly style="background-color: #f8f9fa;">
+      <small class="form-text text-muted">Account status cannot be edited</small>
+    </div>
+    
     <!-- Verification Status (Read-only) -->
     <div class="form-group">
       <label for="verification">Verification Status</label>

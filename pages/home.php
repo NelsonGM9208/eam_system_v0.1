@@ -203,6 +203,64 @@ function getUserDisplayName($user) {
                 font-size: 18px;
             }
         }
+        
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 768px) {
+            .navbar {
+                padding: 10px 15px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .navbar-brand {
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+            
+            .welcome-container {
+                padding: 20px 15px;
+                margin: 20px 15px;
+            }
+            
+            .welcome-title {
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+            }
+            
+            .status-message {
+                font-size: 16px;
+                line-height: 1.5;
+            }
+            
+            .error-message {
+                padding: 15px;
+                margin: 15px;
+                font-size: 14px;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .navbar {
+                padding: 8px 10px;
+            }
+            
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            
+            .welcome-container {
+                padding: 15px 10px;
+                margin: 15px 10px;
+            }
+            
+            .welcome-title {
+                font-size: 1.5rem;
+            }
+            
+            .status-message {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 

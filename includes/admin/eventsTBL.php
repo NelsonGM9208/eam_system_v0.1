@@ -64,7 +64,7 @@ if ($total_records > 0) {
     <div class="card-body">
         <!-- Search and Filter -->
         <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-12 mb-2">
                 <div class="input-group">
                     <input type="text" class="form-control" id="eventSearch" placeholder="Search events...">
                     <div class="input-group-append">
@@ -74,7 +74,7 @@ if ($total_records > 0) {
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-6 mb-2">
                 <select class="form-control" id="eventStatusFilter">
                     <option value="">All Status</option>
                     <option value="Upcoming">Upcoming</option>
@@ -82,15 +82,15 @@ if ($total_records > 0) {
                     <option value="Finished">Finished</option>
                 </select>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2 col-sm-6 mb-2">
                 <select class="form-control" id="eventTypeFilter">
                     <option value="">All Types</option>
                     <option value="Open">Open</option>
                     <option value="Exclusive">Exclusive</option>
                 </select>
             </div>
-            <div class="col-md-1">
-                <button type="button" class="btn btn-outline-secondary btn-sm" id="clearEventFilters" style="font-size: 0.7rem; padding: 0.2rem 0.4rem;">
+            <div class="col-md-1 col-sm-12 mb-2">
+                <button type="button" class="btn btn-outline-secondary btn-sm w-100" id="clearEventFilters">
                     <i class="bx bx-x"></i> Clear
                 </button>
             </div>
@@ -251,13 +251,13 @@ if ($total_records > 0) {
                     <input type="hidden" name="action" value="add">
                     
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-sm-12 mb-3">
                             <div class="form-group">
                                 <label for="eventTitle">Event Title *</label>
                                 <input type="text" class="form-control" id="eventTitle" name="title" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-sm-12 mb-3">
                             <div class="form-group">
                                 <label for="eventType">Event Type *</label>
                                 <select class="form-control" id="eventType" name="event_type" required>
@@ -275,19 +275,19 @@ if ($total_records > 0) {
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-sm-12 mb-3">
                             <div class="form-group">
                                 <label for="eventDate">Event Date *</label>
                                 <input type="date" class="form-control" id="eventDate" name="event_date" required>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 col-sm-6 mb-3">
                             <div class="form-group">
                                 <label for="startTime">Start Time *</label>
                                 <input type="time" class="form-control" id="startTime" name="start_time" required>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 col-sm-6 mb-3">
                             <div class="form-group">
                                 <label for="endTime">End Time *</label>
                                 <input type="time" class="form-control" id="endTime" name="end_time" required>
@@ -296,13 +296,13 @@ if ($total_records > 0) {
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-sm-12 mb-3">
                             <div class="form-group">
                                 <label for="eventLocation">Location *</label>
                                 <input type="text" class="form-control" id="eventLocation" name="location" required>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-sm-12 mb-3">
                             <div class="form-group">
                                 <label for="eventStatus">Status *</label>
                                 <select class="form-control" id="eventStatus" name="event_status" required>

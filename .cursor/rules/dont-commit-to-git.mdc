@@ -1,0 +1,5 @@
+---
+description: Do not commit to github, wait for command
+globs: Do not commit to github, wait for command
+alwaysApply: true
+---
