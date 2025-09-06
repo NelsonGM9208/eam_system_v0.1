@@ -174,7 +174,7 @@ if (!isset($offset)) {
                     ?>
                         <tr>
                             <td colspan="<?php echo $colspan; ?>" class="text-center text-muted">
-                                <div class="py-4">
+                                <div class="py-4 d-flex flex-column align-items-center justify-content-center">
                                     <i class="bx bx-user-x" style="font-size: 2rem; color: #6c757d;"></i>
                                     <p class="mt-2 mb-0"><?php echo htmlspecialchars($tableConfig['emptyMessage']); ?></p>
                                 </div>

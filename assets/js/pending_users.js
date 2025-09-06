@@ -495,9 +495,9 @@ function initPendingUsers() {
         const $btn = $(this);
         $btn.prop('disabled', true).html('Processing...');
         
-        $.post('/eam_system_v0.1.1/includes/admin/approve_users.php', {
-            action: 'approve_multiple',
-            users: checkedUsers
+        $.post('../includes/admin/users_crud.php', {
+            action: 'bulk_approve',
+            user_ids: checkedUsers.map(user => user.id)
         })
         .done(function(response) {
             if(response.includes('successfully')) {

@@ -69,8 +69,8 @@ if (!$users) {
                 <select class="form-control" id="statusFilter">
                     <option value="">All Status</option>
                     <option value="approved">Approved</option>
-                    <option value="rejected">Pending</option>
-                    <option value="pending">Rejected</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
                 </select>
             </div>
             <div class="col-md-2">
@@ -138,7 +138,7 @@ if (!$users) {
                 ?>
                     <tr id="no-results-row">
                         <td colspan="<?php echo $colspan; ?>" class="text-center py-5">
-                            <div class="d-flex flex-column align-items-center">
+                            <div class="d-flex flex-column align-items-center justify-content-center">
                                 <i class="bx bx-user-x" style="font-size: 2rem; color: #6c757d;"></i>
                                 <p class="mt-2 mb-0">No users found</p>
                             </div>
