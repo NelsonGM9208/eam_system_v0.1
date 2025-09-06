@@ -233,8 +233,8 @@ if (typeof window.onFragmentLoaded === 'function') {
     const originalHook = window.onFragmentLoaded;
     window.onFragmentLoaded = function(page) {
         originalHook(page);
-        if (page === 'users' || page === 'dashboard') {
-            console.log('Users page or dashboard loaded via AJAX, initializing...');
+        if (page === 'users') {
+            console.log('Users page loaded via AJAX, initializing...');
             // Reset initialization state and initialize
             resetUsersInit();
             initUsers();
@@ -243,8 +243,8 @@ if (typeof window.onFragmentLoaded === 'function') {
 } else {
     // If no hook exists, create it
     window.onFragmentLoaded = function(page) {
-        if (page === 'users' || page === 'dashboard') {
-            console.log('Users page or dashboard loaded via AJAX, initializing...');
+        if (page === 'users') {
+            console.log('Users page loaded via AJAX, initializing...');
             // Reset initialization state and initialize
             resetUsersInit();
             initUsers();
@@ -255,8 +255,8 @@ if (typeof window.onFragmentLoaded === 'function') {
 // Also initialize on DOM ready if we're already on the users page or dashboard
 $(document).ready(function() {
     const currentPage = new URLSearchParams(window.location.search).get('page');
-    if (currentPage === 'users' || currentPage === 'dashboard') {
-        console.log('DOM ready - on users page or dashboard, initializing...');
+    if (currentPage === 'users') {
+        console.log('DOM ready - on users page, initializing...');
         initUsers();
     }
 });
