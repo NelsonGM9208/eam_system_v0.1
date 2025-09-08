@@ -3,7 +3,9 @@ if (!defined('IN_APP')) {
     define('IN_APP', true);
 }
 require_once __DIR__ . "/../../../utils/index.php";
-require_once __DIR__ . "/../../../config/database.php";
+
+// Get database connection using utils
+$con = getDatabaseConnection();
 
 if (!isset($_GET['id'])) {
     echo "<div class='modal-body'><p class='text-danger'>No class ID provided.</p></div>";
@@ -55,17 +57,17 @@ if (!$class) {
                             <label for="editGrade" class="form-label">Grade Level <span class="text-danger">*</span></label>
                             <select class="form-control" id="editGrade" name="grade" required>
                                 <option value="">Select Grade</option>
-                                <option value="7" <?= ($class['grade_level'] == '7') ? 'selected' : '' ?>>Grade 7</option>
-                                <option value="8" <?= ($class['grade_level'] == '8') ? 'selected' : '' ?>>Grade 8</option>
-                                <option value="9" <?= ($class['grade_level'] == '9') ? 'selected' : '' ?>>Grade 9</option>
-                                <option value="10" <?= ($class['grade_level'] == '10') ? 'selected' : '' ?>>Grade 10</option>
-                                <option value="11" <?= ($class['grade_level'] == '11') ? 'selected' : '' ?>>Grade 11</option>
-                                <option value="12" <?= ($class['grade_level'] == '12') ? 'selected' : '' ?>>Grade 12</option>
+                                <option value="7" <?= ($class['grade'] == '7') ? 'selected' : '' ?>>Grade 7</option>
+                                <option value="8" <?= ($class['grade'] == '8') ? 'selected' : '' ?>>Grade 8</option>
+                                <option value="9" <?= ($class['grade'] == '9') ? 'selected' : '' ?>>Grade 9</option>
+                                <option value="10" <?= ($class['grade'] == '10') ? 'selected' : '' ?>>Grade 10</option>
+                                <option value="11" <?= ($class['grade'] == '11') ? 'selected' : '' ?>>Grade 11</option>
+                                <option value="12" <?= ($class['grade'] == '12') ? 'selected' : '' ?>>Grade 12</option>
                             </select>
                         </div>
                         <div class="col-md-6 col-sm-12 mb-3">
                             <label for="editSection" class="form-label">Section Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="editSection" name="section" value="<?= htmlspecialchars($class['section_name']) ?>" required>
+                            <input type="text" class="form-control" id="editSection" name="section" value="<?= htmlspecialchars($class['section']) ?>" required>
                         </div>
                     </div>
                     <div class="row">

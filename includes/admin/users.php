@@ -21,15 +21,15 @@ if (!initializeDatabase()) {
     exit;
 }
 
-// Total users
-$totalUsersCount = getRecordCount('users');
+// Total users (excluding deactivated accounts)
+$totalUsersCount = getRecordCount('users', 'account_status IS NULL OR account_status != ?', ['deactivated']);
 if ($totalUsersCount === false) {
     echo displayError("Failed to get users count.");
     exit;
 }
 
-// Current page users
-$users = executeQuery("SELECT * FROM users ORDER BY created_at DESC LIMIT ? OFFSET ?", [$limit, $offset], 'ii');
+// Current page users (excluding deactivated accounts)
+$users = executeQuery("SELECT * FROM users WHERE account_status != ? OR account_status IS NULL ORDER BY created_at DESC LIMIT ? OFFSET ?", ['deactivated', $limit, $offset], 'sii');
 if (!$users) {
     echo displayError("Failed to get users data.");
     exit;

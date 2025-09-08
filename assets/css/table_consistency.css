@@ -1,0 +1,125 @@
+/* Table Consistency Styles */
+
+/* Consistent checkbox styling across all tables */
+.table th:first-child,
+.table td:first-child {
+    text-align: center;
+    vertical-align: middle;
+    width: 50px;
+    padding: 8px 4px;
+}
+
+.table .form-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    min-height: 20px;
+}
+
+.table .form-check-input {
+    margin: 0;
+    transform: none;
+    vertical-align: middle;
+}
+
+.table tbody tr {
+    vertical-align: middle;
+}
+
+/* Consistent card header styling */
+.card-header.bg-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+    border-bottom: none;
+}
+
+.card-header.bg-primary h4,
+.card-header.bg-primary h5 {
+    color: white;
+    font-weight: 600;
+}
+
+.card-header.bg-primary .btn-light {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.9);
+    color: #007bff;
+    font-weight: 500;
+}
+
+.card-header.bg-primary .btn-light:hover {
+    background-color: white;
+    border-color: white;
+    color: #007bff;
+}
+
+/* Consistent badge styling in headers */
+.card-header.bg-primary .badge-light {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #007bff;
+}
+
+.card-header.bg-primary .badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+/* Consistent table styling */
+.table thead th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Consistent button group styling */
+.btn-group .btn {
+    border-radius: 0.25rem;
+    margin-right: 2px;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+/* Consistent search and filter styling */
+.input-group .form-control {
+    border-right: none;
+}
+
+.input-group .btn-outline-secondary {
+    border-left: none;
+}
+
+/* Consistent empty state styling */
+.table tbody tr td[colspan] {
+    padding: 3rem 1rem;
+}
+
+.table tbody tr td[colspan] i {
+    font-size: 3rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+/* Consistent pagination styling */
+.pagination .page-link {
+    color: #007bff;
+    border-color: #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+}

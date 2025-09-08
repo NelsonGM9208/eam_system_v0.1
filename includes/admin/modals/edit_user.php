@@ -1,5 +1,12 @@
 <?php
-require "../../../config/database.php";
+if (!defined('IN_APP')) {
+    define('IN_APP', true);
+}
+
+require "../../../utils/index.php";
+
+// Get database connection using utils
+$con = getDatabaseConnection();
 
 if (!isset($_GET['id'])) {
     echo "<div class='modal-body'><p class='text-danger'>No user ID provided.</p></div>";
@@ -62,11 +69,6 @@ if ($user['role'] === 'student') {
     }
 }
 ?>
-
-<div class="modal-header">
-  <h5 class="modal-title">Edit User</h5>
-  <button type="button" class="close" data-dismiss="modal">&times;</button>
-</div>
 
 <form id="editUserForm">
   <div class="modal-body">
@@ -207,7 +209,7 @@ $(document).ready(function(){
             return;
         }
         
-        $.post('../includes/admin/users_crud.php', $(this).serialize(), function(response){
+        $.post('/eam_system_v0.1.1/config/users_crud.php', $(this).serialize(), function(response){
             alert(response);
             if(response.includes('successfully')) {
                 $('#editModal').modal('hide');

@@ -3,7 +3,9 @@ if (!defined('IN_APP')) {
     define('IN_APP', true);
 }
 require_once __DIR__ . "/../../../utils/index.php";
-require_once __DIR__ . "/../../../config/database.php";
+
+// Get database connection using utils
+$con = getDatabaseConnection();
 
 // Get teachers for dropdown
 $teachers_query = "SELECT u.user_id, CONCAT(u.firstname, ' ', u.lastname) as name, u.email 

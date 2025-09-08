@@ -18,7 +18,7 @@ function initDashboard() {
     
     // Initialize if we're on dashboard page or events page (since eventsTBL is used in both)
     const currentPage = new URLSearchParams(window.location.search).get('page') || 'dashboard';
-    if (currentPage !== 'dashboard' && currentPage !== 'events') {
+    if (currentPage !== 'dashboard' && currentPage !== 'dashboards' && currentPage !== 'events') {
         console.log('Not on dashboard or events page, skipping initialization');
         return;
     }
@@ -131,14 +131,14 @@ function initDashboard() {
         $(document).on('click', '.view-event-btn', function() {
             console.log('View event button clicked');
             const eventId = $(this).data('event-id');
-            $('#viewEventContent').load('../includes/admin/modals/view_event.php?id=' + eventId);
+            $('#viewEventContent').load('/eam_system_v0.1.1/includes/admin/modals/view_event.php?id=' + eventId);
         });
         
         // Edit event
         $(document).on('click', '.edit-event-btn', function() {
             console.log('Edit event button clicked');
             const eventId = $(this).data('event-id');
-            $('#editEventContent').load('../includes/admin/modals/edit_event.php?id=' + eventId, function() {
+            $('#editEventContent').load('/eam_system_v0.1.1/includes/admin/modals/edit_event.php?id=' + eventId, function() {
                 // After loading, check if event type is exclusive and load classes
                 setTimeout(function() {
                     const eventType = $('#editEventType').val();
@@ -183,18 +183,21 @@ function initDashboard() {
                 return;
             }
             
+            // Show confirmation dialog
+            // Confirmation is handled by the modal, no need for JavaScript confirm
+            
             const $btn = $(this);
             
             // Disable button and show loading
             $btn.prop('disabled', true).html('<i class="bx bx-loader-alt bx-spin"></i> Deleting...');
             
-            $.post('../includes/admin/events_crud.php', {
+            $.post('../config/events_crud.php', {
                 action: 'delete',
                 id: deleteEventId
             })
             .done(function(response) {
                 if (response.includes('successfully')) {
-                    alert('Event deleted successfully!');
+                    alert(response);
                     $('#deleteEventModal').modal('hide');
                     // Reload the page to show updated data
                     setTimeout(() => location.reload(), 1000);
@@ -267,6 +270,18 @@ function initDashboard() {
             });
         }
         
+        // Show/hide section selection based on event type
+        $(document).on('change', '#eventType', function() {
+            const eventType = $(this).val();
+            if (eventType === 'Exclusive') {
+                $('#sectionSelectionGroup').show();
+            } else {
+                $('#sectionSelectionGroup').hide();
+                // Uncheck all section checkboxes when not exclusive
+                $('.section-checkbox').prop('checked', false);
+            }
+        });
+        
         // Add event form submission
         $(document).on('submit', '#addEventForm', function(e) {
             e.preventDefault();
@@ -274,6 +289,42 @@ function initDashboard() {
             
             const $form = $(this);
             const $submitBtn = $form.find('button[type="submit"]');
+            
+            // Get event title for confirmation
+            const eventTitle = $('#eventTitle').val();
+            
+            // Show confirmation dialog
+            // Confirmation is handled by the modal, no need for JavaScript confirm
+            
+            // Validate date (cannot be in the past)
+            const eventDate = $('#eventDate').val();
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (eventDate < today) {
+                alert('Cannot create events for past dates. Please select today or a future date.');
+                $('#eventDate').focus();
+                return;
+            }
+            
+            // Validate time
+            const startTime = $('#startTime').val();
+            const endTime = $('#endTime').val();
+            
+            if (startTime >= endTime) {
+                alert('Start time must be earlier than end time.');
+                $('#endTime').focus();
+                return;
+            }
+            
+            // Validate exclusive event has at least one section selected
+            const eventType = $('#eventType').val();
+            if (eventType === 'Exclusive') {
+                const selectedSections = $('.section-checkbox:checked').length;
+                if (selectedSections === 0) {
+                    alert('Please select at least one section for exclusive events.');
+                    return;
+                }
+            }
             
             // Disable button and show loading
             $submitBtn.prop('disabled', true).html('<i class="bx bx-loader-alt bx-spin"></i> Adding...');
@@ -291,10 +342,10 @@ function initDashboard() {
                 formData += '&selected_classes=' + encodeURIComponent(JSON.stringify(selectedClasses));
             }
             
-            $.post('../includes/admin/events_crud.php', formData)
+            $.post('../config/events_crud.php', formData)
             .done(function(response) {
                 if (response.includes('successfully')) {
-                    alert('Event added successfully!');
+                    alert(response);
                     $('#addEventModal').modal('hide');
                     // Reload the page to show updated data
                     setTimeout(() => location.reload(), 1000);

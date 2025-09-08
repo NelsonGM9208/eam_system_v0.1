@@ -2,8 +2,11 @@
 if (!defined('IN_APP')) {
     define('IN_APP', true);
 }
+
 require_once __DIR__ . "/../../../utils/index.php";
-require_once __DIR__ . "/../../../config/database.php";
+
+// Get database connection using utils
+$con = getDatabaseConnection();
 
 if (!isset($_GET['id'])) {
     echo "<div class='modal-body'><p class='text-danger'>No class ID provided.</p></div>";
@@ -48,6 +51,29 @@ if (!$class) {
                 </button>
             </div>
             <div class="modal-body">
+                <style>
+                    .form-check {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .form-check-input {
+                        margin: 0;
+                        transform: none;
+                    }
+                    .table td:first-child {
+                        text-align: center;
+                        vertical-align: middle;
+                        width: 40px;
+                    }
+                    .table th:first-child {
+                        text-align: center;
+                        vertical-align: middle;
+                        width: 40px;
+                    }
+                </style>
                 <div class="alert alert-info">
                     <i class="bx bx-info-circle"></i>
                     <strong>Class:</strong> Grade <?= htmlspecialchars($class['grade']) ?> - <?= htmlspecialchars($class['section']) ?>
@@ -59,17 +85,19 @@ if (!$class) {
                         <h6 class="text-success">
                             <i class="bx bx-check-circle"></i> Enrolled Students
                         </h6>
-                        <div class="table-responsive" style="max-height: 400px;">
-                            <table class="table table-sm table-hover" id="enrolledStudentsTable">
+                        <div class="table-responsive" style="max-height: 400px; border: 1px solid #dee2e6; border-radius: 0.375rem;">
+                            <table class="table table-sm table-hover mb-0" id="enrolledStudentsTable">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>
-                                            <input type="checkbox" id="selectAllEnrolled" class="form-check-input">
+                                        <th style="width: 40px;">
+                                            <div class="form-check">
+                                                <input type="checkbox" id="selectAllEnrolled" class="form-check-input">
+                                            </div>
                                         </th>
                                         <th>Student</th>
                                         <th>Email</th>
                                         <th>Enrolled</th>
-                                        <th>Action</th>
+                                        <th style="width: 80px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="enrolledStudentsBody">
@@ -92,17 +120,19 @@ if (!$class) {
                         <div class="mb-2">
                             <input type="text" class="form-control form-control-sm" id="studentSearch" placeholder="Search students...">
                         </div>
-                        <div class="table-responsive" style="max-height: 400px;">
-                            <table class="table table-sm table-hover" id="availableStudentsTable">
+                        <div class="table-responsive" style="max-height: 400px; border: 1px solid #dee2e6; border-radius: 0.375rem;">
+                            <table class="table table-sm table-hover mb-0" id="availableStudentsTable">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>
-                                            <input type="checkbox" id="selectAllAvailable" class="form-check-input">
+                                        <th style="width: 40px;">
+                                            <div class="form-check">
+                                                <input type="checkbox" id="selectAllAvailable" class="form-check-input">
+                                            </div>
                                         </th>
                                         <th>Student</th>
                                         <th>Email</th>
                                         <th>Status</th>
-                                        <th>Action</th>
+                                        <th style="width: 80px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="availableStudentsBody">

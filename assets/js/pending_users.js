@@ -132,9 +132,11 @@ function initPendingUsers() {
                 if (roleFilter) message += ` Role: "${roleFilter}"`;
             }
             
+            // Calculate correct colspan based on table headers
+            const headerCount = $('#usersTable thead th').length;
             $('#usersTable tbody').append(`
                 <tr id="no-results-row">
-                    <td colspan="6" class="text-center text-muted">
+                    <td colspan="${headerCount}" class="text-center text-muted">
                         <div class="py-4">
                             <i class="bx bx-search" style="font-size: 2rem; color: #6c757d;"></i>
                             <p class="mt-2 mb-0">${message}</p>
@@ -495,7 +497,7 @@ function initPendingUsers() {
         const $btn = $(this);
         $btn.prop('disabled', true).html('Processing...');
         
-        $.post('../includes/admin/users_crud.php', {
+        $.post('../config/users_crud.php', {
             action: 'bulk_approve',
             user_ids: checkedUsers.map(user => user.id)
         })
@@ -578,6 +580,9 @@ function initPendingUsers() {
         const userData = window.pendingApproval;
         if (!userData) return;
         
+        // Show confirmation dialog
+        // Confirmation is handled by the modal, no need for JavaScript confirm
+        
         // Disable button to prevent double-click
         const $btn = $(this);
         $btn.prop('disabled', true).html('Processing...');
@@ -590,7 +595,7 @@ function initPendingUsers() {
             user_role: userData.userRole
         });
         
-        $.post('/eam_system_v0.1.1/includes/admin/approve_users.php', {
+        $.post('/eam_system_v0.1.1/config/approve_users.php', {
             action: 'approve',
             id: userData.userId,
             user_name: userData.userName,
@@ -629,11 +634,14 @@ function initPendingUsers() {
         const userData = window.pendingRejection;
         if (!userData) return;
         
+        // Show confirmation dialog
+        // Confirmation is handled by the modal, no need for JavaScript confirm
+        
         // Disable button to prevent double-click
         const $btn = $(this);
         $btn.prop('disabled', true).html('Processing...');
         
-        $.post('/eam_system_v0.1.1/includes/admin/users_crud.php', {
+        $.post('/eam_system_v0.1.1/config/users_crud.php', {
             action: 'reject',
             id: userData.userId
         })
@@ -684,13 +692,13 @@ function initPendingUsers() {
         // Disable button and show loading
         $btn.prop('disabled', true).html('<i class="bx bx-loader-alt bx-spin"></i> Approving...');
         
-        $.post('../includes/admin/users_crud.php', {
+        $.post('../config/users_crud.php', {
             action: 'approve',
             id: userId
         })
         .done(function(response) {
             if (response.includes('successfully')) {
-                alert('User approved successfully!');
+                alert(response);
                 $('#approveUserModal').modal('hide');
                 // Reload the page to show updated data
                 setTimeout(() => location.reload(), 1000);
@@ -728,13 +736,13 @@ function initPendingUsers() {
         // Disable button and show loading
         $btn.prop('disabled', true).html('<i class="bx bx-loader-alt bx-spin"></i> Rejecting...');
         
-        $.post('../includes/admin/users_crud.php', {
+        $.post('../config/users_crud.php', {
             action: 'reject',
             id: userId
         })
         .done(function(response) {
             if (response.includes('successfully')) {
-                alert('User rejected successfully!');
+                alert(response);
                 $('#rejectUserModal').modal('hide');
                 // Reload the page to show updated data
                 setTimeout(() => location.reload(), 1000);

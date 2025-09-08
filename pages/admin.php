@@ -1,6 +1,9 @@
 <?php
 define('IN_APP', true);
-include '../config/auth.php';
+require_once '../utils/auth.php';
+
+// Require admin role access
+requireRole('admin');
 ?>
 <!DOCTYPE html>
 <!-- Coding by CodingNepal || www.codingnepalweb.com -->
@@ -14,11 +17,12 @@ include '../config/auth.php';
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <title>Admin Page</title>
   <link rel="stylesheet" href="../assets/css/includes.css" />
+  <link rel="stylesheet" href="../assets/css/table_consistency.css" />
 </head>
 
 <body data-theme="light">
   <!-- navbar -->
-  <?php include "../includes/admin/header.php"; ?>
+  <?php include "../includes/pages_header.php"; ?>
 
   <!-- sidebar -->
   <?php include "../includes/admin/sidenav.php"; ?>
@@ -29,7 +33,7 @@ include '../config/auth.php';
       <!-- The main content will be loaded here dynamically -->
       <?php
       // Whitelist of allowed pages for security
-      $allowed = ['dashboard', 'pending_users', 'users', 'pending_events', 'events', 'classes', 'attendance', 
+      $allowed = ['dashboard', 'deactivated_users', 'pending_users', 'users', 'pending_events', 'events', 'classes', 'attendance', 
                   'notifications', 'logs', 'logout'];
       $page = $_GET['page'] ?? 'dashboard';  // Default page to 'overview'
       if (!in_array($page, $allowed)) {
@@ -61,6 +65,7 @@ include '../config/auth.php';
   <script src="../assets/js/pending_users.js?v=<?php echo time(); ?>"></script>
   <script src="../assets/js/users.js?v=<?php echo time(); ?>"></script>
   <script src="../assets/js/classes.js?v=<?php echo time(); ?>"></script>
+  <script src="../assets/js/attendance.js?v=<?php echo time(); ?>"></script>
 </body>
 
 </html>

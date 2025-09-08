@@ -3,7 +3,9 @@ if (!defined('IN_APP')) {
     define('IN_APP', true);
 }
 require_once __DIR__ . "/../../../utils/index.php";
-require_once __DIR__ . "/../../../config/database.php";
+
+// Get database connection using utils
+$con = getDatabaseConnection();
 
 if (!isset($_GET['id'])) {
     echo "<div class='modal-body'><p class='text-danger'>No class ID provided.</p></div>";

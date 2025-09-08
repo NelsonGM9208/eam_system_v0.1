@@ -1,6 +1,8 @@
 <?php
+if (!defined('IN_APP')) {
+    define('IN_APP', true);
+}
 require_once __DIR__ . "/../../utils/index.php";
-define('IN_APP', true);
 ?>
 
 <div class="container-fluid">
@@ -17,7 +19,7 @@ define('IN_APP', true);
                         <i class="bx bx-info-circle"></i>
                         <strong>Notifications</strong> - This feature is coming soon!
                     </div>
-                    <p>Notifications will show system alerts, announcements, and important messages.</p>
+                    <p>Notifications will show allow you to manage notifications for your users.</p>
                 </div>
             </div>
         </div>

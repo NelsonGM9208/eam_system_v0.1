@@ -175,22 +175,22 @@ function loadModalContent(modal, type, id, entity = null) {
     switch (type) {
         case 'view':
             if (entity === 'user') {
-                url = `modals/view_user.php?id=${id}`;
+                url = `/eam_system_v0.1.1/includes/admin/modals/view_user.php?id=${id}`;
             } else if (entity === 'event') {
-                url = `modals/view_event.php?id=${id}`;
+                url = `/eam_system_v0.1.1/includes/admin/modals/view_event.php?id=${id}`;
             } else {
-                url = `modals/user_details.php?id=${id}`;
+                url = `/eam_system_v0.1.1/includes/admin/modals/user_details.php?id=${id}`;
             }
             break;
         case 'edit':
             if (entity === 'user') {
-                url = `modals/edit_user.php?id=${id}`;
+                url = `/eam_system_v0.1.1/includes/admin/modals/edit_user.php?id=${id}`;
             } else if (entity === 'event') {
-                url = `modals/edit_event.php?id=${id}`;
+                url = `/eam_system_v0.1.1/includes/admin/modals/edit_event.php?id=${id}`;
             }
             break;
         default:
-            url = `modals/user_details.php?id=${id}`;
+            url = `/eam_system_v0.1.1/includes/admin/modals/user_details.php?id=${id}`;
     }
     
     if (url) {

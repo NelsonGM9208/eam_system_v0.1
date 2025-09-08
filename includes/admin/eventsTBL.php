@@ -1,10 +1,23 @@
 <?php
-require_once __DIR__ . "/../../config/database.php";
+require_once __DIR__ . "/../../utils/index.php";
+
+// Get database connection using utils
+$con = getDatabaseConnection();
 
 // Check database connection
 if (!isset($con) || !$con) {
     echo "<div class='alert alert-danger'>Database connection failed.</div>";
     exit;
+}
+
+// Fetch all available sections for the add event modal
+$sections_query = "SELECT section_id, grade, section FROM section ORDER BY grade, section";
+$sections_result = mysqli_query($con, $sections_query);
+$all_sections = [];
+if ($sections_result) {
+    while ($section = mysqli_fetch_assoc($sections_result)) {
+        $all_sections[] = $section;
+    }
 }
 
 // Pagination settings
@@ -55,9 +68,12 @@ if ($total_records > 0) {
 ?>
 
 <div class="card mt-4 shadow-sm">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Events Management</h5>
-        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addEventModal">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 d-flex align-items-center">
+            <i class="bx bx-calendar-event mr-2"></i>
+            Events Management
+        </h5>
+        <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#addEventModal">
             <i class="bx bx-plus"></i> Add New Event
         </button>
     </div>
@@ -242,9 +258,11 @@ if ($total_records > 0) {
 <div class="modal fade" id="addEventModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add New Event</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bx bx-plus"></i> Add New Event
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
             </div>
             <form id="addEventForm">
                 <div class="modal-body">
@@ -295,24 +313,10 @@ if ($total_records > 0) {
                         </div>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-md-8 col-sm-12 mb-3">
-                            <div class="form-group">
-                                <label for="eventLocation">Location *</label>
-                                <input type="text" class="form-control" id="eventLocation" name="location" required>
-                            </div>
+                        <div class="form-group">
+                            <label for="eventLocation">Location *</label>
+                            <input type="text" class="form-control" id="eventLocation" name="location" required>
                         </div>
-                        <div class="col-md-4 col-sm-12 mb-3">
-                            <div class="form-group">
-                                <label for="eventStatus">Status *</label>
-                                <select class="form-control" id="eventStatus" name="event_status" required>
-                                    <option value="Upcoming">Upcoming</option>
-                                    <option value="Ongoing">Ongoing</option>
-                                    <option value="Finished">Finished</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
                     
                     <div class="form-group">
                         <label for="absPenalty">Absence Penalty</label>
@@ -320,11 +324,38 @@ if ($total_records > 0) {
                                min="0" step="0.01" placeholder="Penalty amount in pesos (₱)">
                     </div>
                     
-                    <!-- Class Selection for Exclusive Events -->
-                    <div class="form-group" id="classSelectionGroup" style="display: none;">
-                        <label>Select Classes for Exclusive Event</label>
-                        <div class="row" id="classCheckboxes">
-                            <!-- Classes will be loaded dynamically -->
+                    <!-- Section Selection for Exclusive Events -->
+                    <div class="form-group" id="sectionSelectionGroup" style="display: none;">
+                        <label class="font-weight-bold">
+                            <i class="bx bx-group"></i> Select Sections for Exclusive Event
+                        </label>
+                        <small class="form-text text-muted mb-3">
+                            Choose which sections can participate in this exclusive event.
+                        </small>
+                        <div class="row" id="sectionCheckboxes">
+                            <?php if (!empty($all_sections)): ?>
+                                <?php foreach ($all_sections as $section): ?>
+                                    <div class="col-md-6 col-lg-4 mb-2">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" 
+                                                   class="custom-control-input section-checkbox" 
+                                                   id="section_<?php echo $section['section_id']; ?>" 
+                                                   name="selected_classes[]" 
+                                                   value="<?php echo $section['section_id']; ?>">
+                                            <label class="custom-control-label" for="section_<?php echo $section['section_id']; ?>">
+                                                <i class="bx bx-group text-primary"></i>
+                                                <?php echo htmlspecialchars($section['grade'] . ' - ' . $section['section']); ?>
+                                            </label>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        <i class="bx bx-info-circle"></i> No sections available. Please add sections first.
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -341,9 +372,11 @@ if ($total_records > 0) {
 <div class="modal fade" id="viewEventModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Event Details</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="bx bx-show"></i> Event Details
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" id="viewEventContent">
                 <!-- Event details will be loaded here -->
@@ -359,9 +392,11 @@ if ($total_records > 0) {
 <div class="modal fade" id="editEventModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Event</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">
+                    <i class="bx bx-edit"></i> Edit Event
+                </h5>
+                <button type="button" class="close text-dark" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" id="editEventContent">
                 <!-- Edit form will be loaded here -->
@@ -374,9 +409,11 @@ if ($total_records > 0) {
 <div class="modal fade" id="deleteEventModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirm Delete</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bx bx-trash"></i> Confirm Delete
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to delete this event?</p>
@@ -389,5 +426,64 @@ if ($total_records > 0) {
         </div>
     </div>
 </div>
+
+<script>
+$(document).ready(function() {
+    // Auto-update event statuses on page load (silently)
+    function autoUpdateEventStatuses() {
+        $.post('/eam_system_v0.1.1/utils/event_status_updater.php', function(response) {
+            try {
+                const results = JSON.parse(response);
+                if (results.updated > 0) {
+                    console.log(`Auto-updated ${results.updated} event statuses`);
+                    // Optionally show a subtle notification
+                    if (results.updated > 0) {
+                        // Show a subtle toast notification
+                        showStatusUpdateNotification(results.updated);
+                    }
+                }
+            } catch (e) {
+                console.error('Error parsing auto-update response:', e);
+            }
+        }).fail(function() {
+            console.error('Failed to auto-update event statuses');
+        });
+    }
+    
+    // Show subtle notification for status updates
+    function showStatusUpdateNotification(updatedCount) {
+        // Create a subtle notification
+        const notification = $(`
+            <div class="alert alert-info alert-dismissible fade show position-fixed" 
+                 style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+                <i class="bx bx-info-circle"></i> 
+                Auto-updated ${updatedCount} event status${updatedCount > 1 ? 'es' : ''}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+        `);
+        
+        $('body').append(notification);
+        
+        // Auto-remove after 3 seconds
+        setTimeout(function() {
+            notification.alert('close');
+        }, 3000);
+    }
+    
+    // Run auto-update on page load
+    autoUpdateEventStatuses();
+    
+    // Set up periodic auto-updates every 5 minutes (300,000 ms)
+    setInterval(function() {
+        // Only run if the events page is still active/visible
+        if (document.visibilityState === 'visible' && !document.hidden) {
+            autoUpdateEventStatuses();
+        }
+    }, 300000); // 5 minutes
+    
+});
+</script>
 
 <!-- Note: JavaScript event handlers are now in dashboard.js -->

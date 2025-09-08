@@ -27,6 +27,7 @@
         </div>
 
         <ul class="menu_items submenu">
+        <li><a href="?page=deactivated_users" class="nav_link sublink" data-page="deactivated_users">Deactivated Users</a></li>
           <li><a href="?page=pending_users" class="nav_link sublink" data-page="pending_users">Pending Users</a></li>
           <li><a href="?page=users" class="nav_link sublink" data-page="users">View Users</a></li>
         </ul>

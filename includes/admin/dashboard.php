@@ -1,16 +1,16 @@
 <?php
-// Define IN_APP to allow access to utilities
 if (!defined('IN_APP')) {
     define('IN_APP', true);
 }
 
 // Include utilities
 require_once __DIR__ . "/../../utils/index.php";
-// include database connection
-require_once __DIR__ . "/../../config/database.php";
 
-// Query statistics
-$totalUsers = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS total FROM users"))['total'] ?? 0;
+// Get database connection using utils
+$con = getDatabaseConnection();
+
+// Query statistics (excluding deactivated accounts)
+$totalUsers = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS total FROM users WHERE account_status != 'deactivated' OR account_status IS NULL"))['total'] ?? 0;
 $totalEvents = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS total FROM events"))['total'] ?? 0;
 $totalAttendance = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS total FROM attendance"))['total'] ?? 0;
 $totalClasses = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS total FROM section"))['total'] ?? 0;

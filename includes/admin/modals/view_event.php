@@ -1,5 +1,12 @@
 <?php
-require "../../../config/database.php";
+if (!defined('IN_APP')) {
+    define('IN_APP', true);
+}
+
+require_once __DIR__ . "/../../../utils/index.php";
+
+// Get database connection using utils
+$con = getDatabaseConnection();
 
 if (!isset($_GET['id'])) {
     echo "<div class='modal-body'><p class='text-danger'>No event ID provided.</p></div>";
@@ -60,6 +67,27 @@ switch($event['event_status']) {
 
 // Type badge colors
 $type_badge = ($event['event_type'] == 'Exclusive') ? 'badge-danger' : 'badge-primary';
+
+// Fetch sections for exclusive events
+$sections = [];
+if ($event['event_type'] == 'Exclusive') {
+    $sections_query = "SELECT s.section_id, s.grade, s.section 
+                       FROM section s 
+                       INNER JOIN event_section es ON s.section_id = es.section_id 
+                       WHERE es.event_id = ? 
+                       ORDER BY s.grade, s.section";
+    $sections_stmt = $con->prepare($sections_query);
+    if ($sections_stmt) {
+        $sections_stmt->bind_param("i", $eventId);
+        if ($sections_stmt->execute()) {
+            $sections_result = $sections_stmt->get_result();
+            while ($section = $sections_result->fetch_assoc()) {
+                $sections[] = $section;
+            }
+        }
+        $sections_stmt->close();
+    }
+}
 ?>
 
 <div class="modal-body">
@@ -98,6 +126,26 @@ $type_badge = ($event['event_type'] == 'Exclusive') ? 'badge-danger' : 'badge-pr
             </span>
           </td>
         </tr>
+        <?php if ($event['event_type'] == 'Exclusive'): ?>
+        <tr>
+          <th>Included Sections</th>
+          <td>
+            <?php if (!empty($sections)): ?>
+              <div class="d-flex flex-wrap gap-2">
+                <?php foreach ($sections as $section): ?>
+                  <span class="badge badge-info">
+                    <i class="bx bx-group"></i> <?php echo htmlspecialchars($section['grade'] . ' - ' . $section['section']); ?>
+                  </span>
+                <?php endforeach; ?>
+              </div>
+            <?php else: ?>
+              <span class="text-muted">
+                <i class="bx bx-info-circle"></i> No sections assigned yet
+              </span>
+            <?php endif; ?>
+          </td>
+        </tr>
+        <?php endif; ?>
         <tr>
           <th>Status</th>
           <td>

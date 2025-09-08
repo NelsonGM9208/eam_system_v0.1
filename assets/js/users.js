@@ -21,7 +21,7 @@ function initUsers() {
     // Only initialize if we're on the users page or dashboard (which includes usersTBL)
     const currentPage = new URLSearchParams(window.location.search).get('page') || 'dashboard';
     console.log('Current page detected:', currentPage);
-    if (currentPage !== 'users' && currentPage !== 'dashboard') {
+    if (currentPage !== 'users' && currentPage !== 'dashboard' && currentPage !== 'dashboards') {
         console.log('Not on users or dashboard page, skipping initialization');
         return;
     }
@@ -143,7 +143,7 @@ function initUsers() {
         modal.modal('show');
         
         // Load user details
-        $.get('../includes/admin/load_modal.php', {modal: 'user_details', id: userId})
+        $.get('/eam_system_v0.1.1/includes/admin/load_modal.php', {modal: 'user_details', id: userId})
             .done(function(data) {
                 $('#viewUserContent').html(data);
                 // Update modal title
@@ -167,7 +167,7 @@ function initUsers() {
         modal.modal('show');
         
         // Load edit form
-        $.get('../includes/admin/modals/edit_user.php', {id: userId})
+        $.get('/eam_system_v0.1.1/includes/admin/modals/edit_user.php', {id: userId})
             .done(function(data) {
                 $('#editUserContent').html(data);
             })
@@ -176,38 +176,41 @@ function initUsers() {
             });
     });
 
-    // Delete User Handler - Only for users table
-    console.log('Binding delete button event handler');
-    let deleteUserId = null;
+    // Deactivate User Handler - Only for users table
+    console.log('Binding deactivate button event handler');
+    let deactivateUserId = null;
     $(document).on('click', '#usersTable .delete-btn', function() {
         console.log('Delete button clicked in users');
-        deleteUserId = $(this).data('id');
+        deactivateUserId = $(this).data('id');
         $('#deleteUserModal').modal('show');
     });
 
-    // Delete Confirmation Handler
+    // Deactivate Confirmation Handler
     $(document).on('click', '#confirmDeleteUserBtn', function() {
-        console.log('Confirm delete button clicked');
-        console.log('deleteUserId:', deleteUserId);
+        console.log('Confirm deactivate button clicked');
+        console.log('deactivateUserId:', deactivateUserId);
         
-        if (!deleteUserId) {
-            console.error('No user ID found for deletion');
-            alert('Error: No user selected for deletion');
+        if (!deactivateUserId) {
+            console.error('No user ID found for deactivation');
+            alert('Error: No user selected for deactivation');
             return;
         }
+        
+        // Show confirmation dialog
+        // Confirmation is handled by the modal, no need for JavaScript confirm
         
         const $btn = $(this);
         
         // Disable button and show loading
-        $btn.prop('disabled', true).html('<i class="bx bx-loader-alt bx-spin"></i> Deleting...');
+        $btn.prop('disabled', true).html('<i class="bx bx-loader-alt bx-spin"></i> Deactivating...');
         
-        $.post('../includes/admin/users_crud.php', {
+        $.post('../config/users_crud.php', {
             action: 'delete',
-            id: deleteUserId
+            id: deactivateUserId
         })
         .done(function(response) {
             if (response.includes('successfully')) {
-                alert('User deleted successfully!');
+                alert(response);
                 $('#deleteUserModal').modal('hide');
                 // Reload the page to show updated data
                 setTimeout(() => location.reload(), 1000);
@@ -216,12 +219,12 @@ function initUsers() {
             }
         })
         .fail(function() {
-            alert('Failed to delete user. Please try again.');
+            alert('Failed to deactivate user. Please try again.');
         })
         .always(function() {
             // Re-enable button
-            $btn.prop('disabled', false).html('Delete User');
-            deleteUserId = null;
+            $btn.prop('disabled', false).html('<i class="bx bx-trash"></i> Delete');
+            deactivateUserId = null;
         });
     });
 }

@@ -3,7 +3,9 @@ if (!defined('IN_APP')) {
     define('IN_APP', true);
 }
 require_once __DIR__ . "/../../../utils/index.php";
-require_once __DIR__ . "/../../../config/database.php";
+
+// Get database connection using utils
+$con = getDatabaseConnection();
 
 // Pagination settings
 $records_per_page = 10;
@@ -96,7 +98,9 @@ if ($total_records > 0) {
         <thead class="thead-light">
             <tr>
                 <th style="width: 50px; text-align: center;">
-                    <input type="checkbox" id="selectAll" class="form-check-input">
+                    <div class="form-check">
+                        <input type="checkbox" id="selectAll" class="form-check-input">
+                    </div>
                 </th>
                 <th>Grade</th>
                 <th>Section</th>
@@ -112,7 +116,9 @@ if ($total_records > 0) {
                 <?php while ($row = $result->fetch_assoc()): ?>
                     <tr>
                         <td style="text-align: center;">
-                            <input type="checkbox" class="form-check-input class-checkbox" value="<?= $row['section_id'] ?>">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input class-checkbox" value="<?= $row['section_id'] ?>">
+                            </div>
                         </td>
                         <td>
                             <span class="badge badge-primary">Grade <?= htmlspecialchars($row['grade']) ?></span>

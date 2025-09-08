@@ -23,16 +23,19 @@ html,body{
 }
 .container .form{
     background: #fff;
-    padding: 30px 35px;
+    padding: 50px 60px;
     border-radius: 5px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    width: 100%;
-    max-width: 450px;
+    width: 100% !important;
+    max-width: 800px !important;
     margin: 0 auto;
+    flex: 0 0 100% !important;
 }
 .container .form form .form-control{
-    height: 40px;
-    font-size: 15px;
+    height: 50px;
+    font-size: 16px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
 }
 .container .form form .forget-pass{
     margin: -15px 0 15px 0;
@@ -43,8 +46,9 @@ html,body{
 .container .form form .button{
     background: #6665ee;
     color: #fff;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 500;
+    height: 55px;
     transition: all 0.3s ease;
 }
 .container .form form .button:hover{
@@ -60,57 +64,6 @@ html,body{
     font-size: 14px;
 }
 
-/* Mobile Responsiveness */
-@media screen and (max-width: 768px) {
-    .container {
-        min-height: calc(100vh - 140px); /* Full height minus mobile header space */
-        padding-top: 140px; /* More space for mobile header to prevent overlap */
-        padding-left: 20px;
-        padding-right: 20px;
-        padding-bottom: 20px;
-    }
-    
-    .container .form {
-        padding: 20px 25px;
-        margin: 0;
-        width: 100%;
-        max-width: 400px;
-    }
-    
-    .container .form form .form-control {
-        height: 45px;
-        font-size: 16px; /* Prevents zoom on iOS */
-    }
-    
-    .container .form form .button {
-        height: 45px;
-        font-size: 16px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .container {
-        min-height: calc(100vh - 140px); /* Full height minus mobile header space */
-        padding-top: 140px; /* More space for mobile header to prevent overlap */
-        padding-left: 10px;
-        padding-right: 10px;
-        padding-bottom: 10px;
-    }
-    
-    .container .form {
-        padding: 15px 20px;
-        width: 100%;
-        max-width: 350px;
-    }
-    
-    .container .form h2 {
-        font-size: 1.5rem;
-    }
-    
-    .container .form form p {
-        font-size: 13px;
-    }
-}
 .container .row .alert{
     font-size: 14px;
 }

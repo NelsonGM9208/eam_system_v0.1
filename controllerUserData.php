@@ -6,12 +6,22 @@ if (!defined('IN_APP')) {
     define('IN_APP', true);
 }
 
+// Only require authentication if we're not on authentication pages
+$auth_pages = ['login.php', 'signup-user.php', 'forgot-password.php', 'reset-code.php', 'new-password.php', 'user-otp.php', 'password-changed.php'];
+$current_page = basename($_SERVER['PHP_SELF']);
+
+if (!in_array($current_page, $auth_pages)) {
+    require_once 'utils/auth.php';
+}
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require 'vendor/autoload.php';
-require "config/database.php";
 require "utils/index.php";
+
+// Get database connection using utils
+$con = getDatabaseConnection();
 
 // Ensure database connection is available
 if (!isset($con) || !$con) {
@@ -207,17 +217,21 @@ if (isset($_POST['login'])) {
         $fetch_pass = $fetch['password'];
 
         if (password_verify($password, $fetch_pass)) {
-            $_SESSION['email'] = $email;
-            $_SESSION['user_id'] = $fetch['user_id'];
-            $_SESSION['role'] = $fetch['role'];
+            // Check if account is deactivated
+            if (isset($fetch['account_status']) && $fetch['account_status'] === 'deactivated') {
+                $errors[] = "Your account has been deactivated. Please contact an administrator.";
+            } else {
+                $_SESSION['email'] = $email;
+                $_SESSION['user_id'] = $fetch['user_id'];
+                $_SESSION['role'] = $fetch['role'];
 
-            $status = $fetch['verification_status'];
-            if ($status == 'verified') {
-                // check account status
-                if ($fetch['status'] !== 'Approved') {
-                    header('location: pages/home.php'); 
-                    exit();
-                } else {
+                $status = $fetch['verification_status'];
+                if ($status == 'verified') {
+                    // check account status
+                    if ($fetch['status'] !== 'Approved') {
+                        header('location: pages/home.php'); 
+                        exit();
+                    } else {
                     // if approved, check role
                     switch ($fetch['role']) {
                         case 'admin':
@@ -255,6 +269,7 @@ if (isset($_POST['login'])) {
                         header('location: user-otp.php');
                         exit();
                     }
+                }
             }
         } else {
             $errors['email'] = "Incorrect email or password!";

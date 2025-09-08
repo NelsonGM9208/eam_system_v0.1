@@ -52,6 +52,12 @@ function getBadgeClass($value, $type = 'default') {
                 case 'exclusive': return 'badge-warning';
                 default: return 'badge-secondary';
             }
+        case 'account_status':
+            switch($value) {
+                case 'active': return 'badge-success';
+                case 'deactivated': return 'badge-danger';
+                default: return 'badge-secondary';
+            }
         default:
             return 'badge-secondary';
     }

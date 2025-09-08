@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 06, 2025 at 04:09 PM
+-- Generation Time: Sep 07, 2025 at 10:08 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,10 +47,18 @@ CREATE TABLE `enrollment` (
   `enrollment_id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
   `section_id` int(11) NOT NULL,
-  `enrollment_date` date NOT NULL,
+  `enrollment_date` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `status` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `enrollment`
+--
+
+INSERT INTO `enrollment` (`enrollment_id`, `student_id`, `section_id`, `enrollment_date`, `updated_at`, `status`) VALUES
+(8, 18, 1, '2025-09-07 00:00:00', '2025-09-07 08:01:28', 'Inactive'),
+(9, 18, 1, '2025-09-07 00:00:00', '2025-09-07 08:06:42', 'Inactive');
 
 -- --------------------------------------------------------
 
@@ -82,7 +90,7 @@ CREATE TABLE `events` (
 --
 
 INSERT INTO `events` (`event_id`, `title`, `event_description`, `event_date`, `start_time`, `end_time`, `location`, `event_type`, `event_status`, `created_at`, `created_by`, `creator_role`, `updated_by`, `updated_at`, `abs_penalty`, `approval_status`) VALUES
-(3, 'New', 'New One', '2025-09-06', '15:22:00', '20:23:00', 'Sagbayan Gymnasium', 'Exclusive', 'Upcoming', '2025-09-06 05:23:34', 3, 'admin', 3, '2025-09-06 09:44:05', 90, 'Approved');
+(3, 'New', 'New One', '2025-09-06', '15:22:00', '20:23:00', 'Sagbayan Gymnasium', 'Exclusive', 'Upcoming', '2025-09-06 05:23:34', 3, 'admin', 3, '2025-09-07 06:40:47', 90, 'Approved');
 
 -- --------------------------------------------------------
 
@@ -94,6 +102,13 @@ CREATE TABLE `event_section` (
   `event_id` int(11) NOT NULL,
   `section_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `event_section`
+--
+
+INSERT INTO `event_section` (`event_id`, `section_id`) VALUES
+(3, 1);
 
 -- --------------------------------------------------------
 
@@ -158,7 +173,7 @@ CREATE TABLE `section` (
   `grade` varchar(10) NOT NULL,
   `section` varchar(20) NOT NULL,
   `description` text DEFAULT NULL,
-  `teacher_id` int(11) NOT NULL,
+  `teacher_id` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -168,7 +183,8 @@ CREATE TABLE `section` (
 --
 
 INSERT INTO `section` (`section_id`, `grade`, `section`, `description`, `teacher_id`, `created_at`, `updated_at`) VALUES
-(1, '12', 'ICT', 'TVL - ICT', 16, '2025-09-06 14:07:18', '2025-09-06 14:07:18');
+(1, '12', 'ICT', 'TVL - Information and Communication Technology Miss you', 16, '2025-09-06 14:07:18', '2025-09-07 07:26:08'),
+(13, '12', 'STEM', 'Sayang Tanan Evening Moments', 17, '2025-09-06 14:50:07', '2025-09-07 07:27:10');
 
 -- --------------------------------------------------------
 
@@ -182,6 +198,13 @@ CREATE TABLE `students` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `mis_id` char(6) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `students`
+--
+
+INSERT INTO `students` (`student_id`, `lrn`, `created_at`, `mis_id`) VALUES
+(18, '118398140001', '2025-09-06 15:14:21', '429023');
 
 -- --------------------------------------------------------
 
@@ -199,7 +222,9 @@ CREATE TABLE `teacher` (
 --
 
 INSERT INTO `teacher` (`teacher_id`, `course`) VALUES
-(16, '12-Philosophy');
+(16, '12-Philosophy'),
+(17, '12-Physics'),
+(19, '11-Probability and Statistics');
 
 -- --------------------------------------------------------
 
@@ -230,7 +255,10 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `email`, `password`, `role`, `profile_photo`, `created_at`, `updated_at`, `status`, `code`, `verification_status`, `firstname`, `lastname`, `gender`, `updated_by`) VALUES
 (3, 'nherrera@sanagustinnhs.net', '$2y$10$N/2o2bjkkrjeU6vRo7q6SOwGhXN/tz7jrWO7NB8aj4V0SfB6lcLRO', 'admin', NULL, '2025-08-30 05:39:57', '2025-09-02 14:50:25', 'Approved', 0, 'verified', 'Nelson', 'Herrera', 'Male', 0),
-(16, 'pr1researchers@gmail.com', '$2y$10$9TqGrd.kBRZuaW7JKC3fYOA85jNz/..Yo6vO2qEAFwPDgNgTJVwa.', 'teacher', NULL, '2025-09-06 09:02:08', '2025-09-06 11:47:00', 'Approved', 0, 'verified', 'John', 'Doe', 'Male', 3);
+(16, 'pr1researchers@gmail.com', '$2y$10$9TqGrd.kBRZuaW7JKC3fYOA85jNz/..Yo6vO2qEAFwPDgNgTJVwa.', 'teacher', NULL, '2025-09-06 09:02:08', '2025-09-07 06:00:52', 'Approved', 401206, 'verified', 'John', 'Doe', 'Male', 3),
+(17, 'nelsonherrera920815@gmail.com', '$2y$10$RgdvMrxd7KpSsTVkYgpP1u9rT/ECcKo53S0/YpBbzbfXCSiTIvxRq', 'teacher', NULL, '2025-09-06 14:52:26', '2025-09-06 14:54:03', 'Approved', 0, 'verified', 'Default', 'Teacher', 'Female', 3),
+(18, 'nelsonherrera9208@gmail.com', '$2y$10$NGyKeb8IRSv4feEtKsQPdu977qHW2EiUJx3e2h2BoI87hqdVXhDry', 'student', NULL, '2025-09-06 15:14:21', '2025-09-06 15:46:40', 'Approved', 0, 'verified', 'Jave', 'Herrera', 'Male', NULL),
+(19, 'hvitorillo@sanagustinnhs.net', '$2y$10$SCGvcDo5f6oDTrl7trUS3uoqajlWlx0yStU3HcI/ADOQer7zdNlwm', 'teacher', NULL, '2025-09-07 06:00:22', '2025-09-07 06:00:22', 'Pending', 532121, 'notverified', 'Jack', 'Sparrow', 'Male', NULL);
 
 --
 -- Indexes for dumped tables
@@ -328,7 +356,7 @@ ALTER TABLE `attendance`
 -- AUTO_INCREMENT for table `enrollment`
 --
 ALTER TABLE `enrollment`
-  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -358,13 +386,13 @@ ALTER TABLE `notification`
 -- AUTO_INCREMENT for table `section`
 --
 ALTER TABLE `section`
-  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- Constraints for dumped tables
@@ -381,7 +409,7 @@ ALTER TABLE `attendance`
 -- Constraints for table `enrollment`
 --
 ALTER TABLE `enrollment`
-  ADD CONSTRAINT `enrollment_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`student_id`),
+  ADD CONSTRAINT `enrolled_student` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`),
   ADD CONSTRAINT `enrollment_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`);
 
 --
@@ -402,7 +430,7 @@ ALTER TABLE `excuse_letter`
 -- Constraints for table `section`
 --
 ALTER TABLE `section`
-  ADD CONSTRAINT `section_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `teacher` (`teacher_id`);
+  ADD CONSTRAINT `section_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `teacher`

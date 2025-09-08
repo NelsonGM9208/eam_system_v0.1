@@ -1,5 +1,12 @@
 <?php
-require "../../../config/database.php";
+if (!defined('IN_APP')) {
+    define('IN_APP', true);
+}
+
+require "../../../utils/index.php";
+
+// Get database connection using utils
+$con = getDatabaseConnection();
 
 if (!isset($_GET['id'])) {
     echo "<div class='modal-body'><p class='text-danger'>No user ID provided.</p></div>";

@@ -17,8 +17,8 @@ if (!initializeDatabase()) {
 $limit = 10;
 $current_page = validateInput($_GET['page_num'] ?? 1, 'int', 1);
 
-// Get total users count using utility
-$totalUsersCount = getRecordCount('users');
+// Get total users count using utility (excluding deactivated accounts)
+$totalUsersCount = getRecordCount('users', 'account_status IS NULL OR account_status != ?', ['deactivated']);
 if ($totalUsersCount === false) {
     echo displayError("Failed to get users count.");
     exit;
@@ -27,8 +27,8 @@ if ($totalUsersCount === false) {
 // Calculate pagination using utility
 $pagination = calculatePagination($totalUsersCount, $limit, $current_page);
 
-// Get current page users using utility
-$query = "SELECT * FROM users ORDER BY created_at DESC LIMIT ?, ?";
+// Get current page users using utility (excluding deactivated accounts)
+$query = "SELECT * FROM users WHERE account_status != 'deactivated' OR account_status IS NULL ORDER BY created_at DESC LIMIT ?, ?";
 $users = executeQuery($query, [$pagination['offset'], $pagination['recordsPerPage']], 'ii');
 if (!$users) {
     echo displayError("Failed to fetch users.");
@@ -37,10 +37,13 @@ if (!$users) {
 ?>
 
 <div class="card mt-4 shadow-sm">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Users</h5>
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 d-flex align-items-center">
+            <i class="bx bx-group mr-2"></i>
+            Users
+        </h5>
         <div>
-            <span class="badge badge-info badge-pill"><?php echo $totalUsersCount; ?> Total</span>
+            <span class="badge badge-light badge-pill"><?php echo $totalUsersCount; ?> Total</span>
         </div>
     </div>
     <div class="card-body">
@@ -158,9 +161,11 @@ if (!$users) {
 <div class="modal fade" id="viewUserModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">User Details</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="bx bx-show"></i> User Details
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" id="viewUserContent">
                 <!-- User details will be loaded here via AJAX -->
@@ -175,8 +180,16 @@ if (!$users) {
 <!-- Edit User Modal -->
 <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" id="editUserContent">
-            <!-- Edit form will be loaded here via AJAX -->
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">
+                    <i class="bx bx-edit"></i> Edit User
+                </h5>
+                <button type="button" class="close text-dark" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="editUserContent">
+                <!-- Edit form will be loaded here via AJAX -->
+            </div>
         </div>
     </div>
 </div>
@@ -185,17 +198,28 @@ if (!$users) {
 <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirm Delete</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bx bx-user-x"></i> Deactivate User Account
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete this user?</p>
-                <p class="text-danger"><strong>This action cannot be undone.</strong></p>
+                <p>Are you sure you want to deactivate this user account?</p>
+                <div class="alert alert-danger">
+                    <strong>What this means:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>The user will no longer be able to log in</li>
+                        <li>All their data and records will be preserved</li>
+                        <li>You can reactivate the account later if needed</li>
+                        <li>The user will be moved to the "Deactivated Users" section</li>
+                    </ul>
+                </div>
+                <p class="text-info"><strong>This is a reversible action - you can reactivate the account anytime.</strong></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteUserBtn">Delete User</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteUserBtn">Deactivate Account</button>
             </div>
         </div>
     </div>

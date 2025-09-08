@@ -1,6 +1,9 @@
 <?php
 if (!defined('IN_APP')) { define('IN_APP', true); }
-require_once __DIR__ . "/../../config/database.php";
+require_once __DIR__ . "/../../utils/index.php";
+
+// Get database connection using utils
+$con = getDatabaseConnection();
 
 // Check database connection
 if (!isset($con) || !$con) {

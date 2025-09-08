@@ -44,13 +44,16 @@ if (!isset($offset)) {
 ?>
 
 <div class="card mt-4 shadow-sm">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><?php echo htmlspecialchars($tableConfig['title']); ?></h5>
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 d-flex align-items-center">
+            <i class="bx bx-group mr-2"></i>
+            <?php echo htmlspecialchars($tableConfig['title']); ?>
+        </h5>
         <div>
             <?php if ($tableConfig['showCheckboxes']): ?>
                 <span class="badge badge-warning badge-pill"><?php echo $totalUsersCount; ?> Users</span>
             <?php else: ?>
-                <span class="badge badge-info badge-pill"><?php echo $totalUsersCount; ?> Total</span>
+                <span class="badge badge-light badge-pill"><?php echo $totalUsersCount; ?> Total</span>
             <?php endif; ?>
         </div>
     </div>
@@ -100,8 +103,8 @@ if (!isset($offset)) {
                 <thead class="thead-light">
                     <tr>
                         <?php if ($tableConfig['showCheckboxes']): ?>
-                        <th width="5%">
-                            <input type="checkbox" id="selectAll" <?php echo $totalUsersCount == 0 ? 'disabled' : ''; ?>>
+                        <th style="width: 50px; text-align: center;">
+                            <input type="checkbox" id="selectAll" class="form-check-input" <?php echo $totalUsersCount == 0 ? 'disabled' : ''; ?>>
                         </th>
                         <?php endif; ?>
                         <th>Profile</th>
@@ -111,6 +114,7 @@ if (!isset($offset)) {
                         <?php if ($tableConfig['showStatus']): ?>
                         <th>Status</th>
                         <?php endif; ?>
+                        <th>Account</th>
                         <?php if ($tableConfig['showVerification']): ?>
                         <th>Verification</th>
                         <?php endif; ?>
@@ -130,6 +134,7 @@ if (!isset($offset)) {
                             // Use completely unique variable names to avoid any conflicts
                             $userRole = sanitizeOutput($row['role'] ?: 'N/A');
                             $userStatus = sanitizeOutput($row['status'] ?? 'Pending');
+                            $accountStatus = sanitizeOutput($row['account_status'] ?? 'active');
                             
                             $verification = sanitizeOutput($row['verification_status']);
                             $created_at = formatDate($row['created_at'] ?? '');
@@ -140,11 +145,12 @@ if (!isset($offset)) {
                             $role_badge = getBadgeClass($userRole, 'role');
                             $status_badge = getBadgeClass($userStatus, 'status');
                             $verification_badge = getBadgeClass($verification, 'verification');
+                            $account_status_badge = getBadgeClass($accountStatus, 'account_status');
                     ?>
                         <tr data-user-id="<?php echo $id; ?>">
                             <?php if ($tableConfig['showCheckboxes']): ?>
-                            <td>
-                                <input type="checkbox" class="user-checkbox" value="<?php echo $id; ?>">
+                            <td style="text-align: center;">
+                                <input type="checkbox" class="form-check-input user-checkbox" value="<?php echo $id; ?>">
                             </td>
                             <?php endif; ?>
                             <td><?php echo $profilePhoto; ?></td>
@@ -157,6 +163,11 @@ if (!isset($offset)) {
                             <?php if ($tableConfig['showStatus']): ?>
                             <td><span class="badge <?php echo $status_badge; ?>"><?php echo ucfirst($userStatus); ?></span></td>
                             <?php endif; ?>
+                            <td>
+                                <span class="badge <?php echo $account_status_badge; ?>">
+                                    <?php echo ucfirst($accountStatus); ?>
+                                </span>
+                            </td>
                             <?php if ($tableConfig['showVerification']): ?>
                             <td><span class="badge <?php echo $verification_badge; ?>"><?php echo ucfirst($verification); ?></span></td>
                             <?php endif; ?>
@@ -170,7 +181,7 @@ if (!isset($offset)) {
                     <?php
                         endwhile;
                     else:
-                        $colspan = 3 + ($tableConfig['showStatus'] ? 1 : 0) + ($tableConfig['showVerification'] ? 1 : 0) + ($tableConfig['showRegistrationDate'] ? 1 : 0) + ($tableConfig['showCheckboxes'] ? 1 : 0);
+                        $colspan = 5 + ($tableConfig['showStatus'] ? 1 : 0) + ($tableConfig['showVerification'] ? 1 : 0) + ($tableConfig['showRegistrationDate'] ? 1 : 0) + ($tableConfig['showCheckboxes'] ? 1 : 0);
                     ?>
                         <tr>
                             <td colspan="<?php echo $colspan; ?>" class="text-center text-muted">

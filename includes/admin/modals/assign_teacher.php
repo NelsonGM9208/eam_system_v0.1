@@ -3,7 +3,9 @@ if (!defined('IN_APP')) {
     define('IN_APP', true);
 }
 require_once __DIR__ . "/../../../utils/index.php";
-require_once __DIR__ . "/../../../config/database.php";
+
+// Get database connection using utils
+$con = getDatabaseConnection();
 
 if (!isset($_GET['id'])) {
     echo "<div class='modal-body'><p class='text-danger'>No class ID provided.</p></div>";
@@ -15,7 +17,7 @@ $sectionId = intval($_GET['id']);
 // Fetch class details
 $query = "SELECT s.*, CONCAT(u.firstname, ' ', u.lastname) as teacher_name 
           FROM section s 
-          LEFT JOIN users u ON s.adviser_id = u.user_id 
+          LEFT JOIN users u ON s.teacher_id = u.user_id 
           WHERE s.section_id = ?";
 $stmt = $con->prepare($query);
 if (!$stmt) {
@@ -62,7 +64,7 @@ $teachers_result = mysqli_query($con, $teachers_query);
                 <div class="modal-body">
                     <div class="alert alert-info">
                         <i class="bx bx-info-circle"></i>
-                        <strong>Current Class:</strong> Grade <?= htmlspecialchars($class['grade_level']) ?> - <?= htmlspecialchars($class['section_name']) ?>
+                        <strong>Current Class:</strong> Grade <?= htmlspecialchars($class['grade']) ?> - <?= htmlspecialchars($class['section']) ?>
                     </div>
                     <div class="row">
                         <div class="col-12 mb-3">
@@ -70,7 +72,7 @@ $teachers_result = mysqli_query($con, $teachers_query);
                             <select class="form-control" id="assignTeacherSelect" name="teacher_id" required>
                                 <option value="">Select Teacher</option>
                                 <?php while ($teacher = mysqli_fetch_assoc($teachers_result)): ?>
-                                    <option value="<?= $teacher['user_id'] ?>" <?= ($class['adviser_id'] == $teacher['user_id']) ? 'selected' : '' ?>>
+                                    <option value="<?= $teacher['user_id'] ?>" <?= ($class['teacher_id'] == $teacher['user_id']) ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($teacher['name']) ?> (<?= htmlspecialchars($teacher['email']) ?>)
                                     </option>
                                 <?php endwhile; ?>

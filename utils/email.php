@@ -16,6 +16,15 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 /**
+ * Get local date and time in Philippines timezone
+ */
+function getLocalDateTime() {
+    // Set timezone to Philippines
+    date_default_timezone_set('Asia/Manila');
+    return date('F j, Y \a\t g:i A');
+}
+
+/**
  * Base email template with common styles and structure
  */
 function getBaseEmailTemplate($title, $content, $footerText = null) {
@@ -275,7 +284,7 @@ function createUserRemovalEmail($name, $email, $role) {
                 <li><strong>Name:</strong> ' . htmlspecialchars($name) . '</li>
                 <li><strong>Email:</strong> ' . htmlspecialchars($email) . '</li>
                 <li><strong>Role:</strong> ' . htmlspecialchars($role) . '</li>
-                <li><strong>Removal Date:</strong> ' . date('F j, Y \a\t g:i A') . '</li>
+                <li><strong>Removal Date:</strong> ' . getLocalDateTime() . '</li>
             </ul>
             
             <p><strong>What this means:</strong></p>
@@ -362,7 +371,7 @@ function createUserApprovalEmail($name, $role) {
             <ul>
                 <li><strong>Name:</strong> ' . htmlspecialchars($name) . '</li>
                 <li><strong>Role:</strong> ' . htmlspecialchars($role) . '</li>
-                <li><strong>Approval Date:</strong> ' . date('F j, Y \a\t g:i A') . '</li>
+                <li><strong>Approval Date:</strong> ' . getLocalDateTime() . '</li>
             </ul>
             
             <p><strong>What\'s next:</strong></p>
@@ -384,6 +393,94 @@ function createUserApprovalEmail($name, $role) {
         </p>';
     
     return getBaseEmailTemplate('Account Approved', $content);
+}
+
+/**
+ * Create user deactivation email template
+ */
+function createUserDeactivationEmail($name, $email, $role) {
+    $content = '
+        <div class="greeting">Dear <span class="highlight">' . htmlspecialchars($name) . '</span>,</div>
+        
+        <div style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%); border-radius: 20px; padding: 40px; margin: 40px 0; color: white; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(255, 193, 7, 0.3);">
+            <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+            <h2 style="margin: 0; font-size: 24px;">Your Account Has Been Deactivated</h2>
+        </div>
+        
+        <div class="instructions">
+            <p>We are writing to inform you that your EAMS account has been deactivated.</p>
+            
+            <p><strong>Account Details:</strong></p>
+            <ul>
+                <li><strong>Name:</strong> ' . htmlspecialchars($name) . '</li>
+                <li><strong>Email:</strong> ' . htmlspecialchars($email) . '</li>
+                <li><strong>Role:</strong> ' . htmlspecialchars($role) . '</li>
+                <li><strong>Deactivation Date:</strong> ' . getLocalDateTime() . '</li>
+            </ul>
+            
+            <p><strong>What this means:</strong></p>
+            <ul>
+                <li>You will no longer be able to access the EAMS system</li>
+                <li>All your data and records remain intact in our system</li>
+                <li>Your account can be reactivated by an administrator if needed</li>
+            </ul>
+        </div>
+        
+        <div class="contact-info">
+            <strong>Need assistance?</strong><br>
+            If you believe this deactivation was made in error, please contact the school administration immediately.
+        </div>
+        
+        <p class="instructions">
+            Thank you for your understanding. If you have any questions or concerns, 
+            please don\'t hesitate to reach out to our school administration.
+        </p>';
+    
+    return getBaseEmailTemplate('Account Deactivated', $content);
+}
+
+/**
+ * Create user reactivation email template
+ */
+function createUserReactivationEmail($name, $email, $role) {
+    $content = '
+        <div class="greeting">Welcome back <span class="highlight">' . htmlspecialchars($name) . '</span>!</div>
+        
+        <div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 20px; padding: 40px; margin: 40px 0; color: white; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);">
+            <div style="font-size: 48px; margin-bottom: 20px;">🎉</div>
+            <h2 style="margin: 0; font-size: 24px;">Your Account Has Been Reactivated!</h2>
+        </div>
+        
+        <div class="instructions">
+            <p>Great news! Your EAMS account has been reactivated and you can now access the system again.</p>
+            
+            <p><strong>Account Details:</strong></p>
+            <ul>
+                <li><strong>Name:</strong> ' . htmlspecialchars($name) . '</li>
+                <li><strong>Email:</strong> ' . htmlspecialchars($email) . '</li>
+                <li><strong>Role:</strong> ' . htmlspecialchars($role) . '</li>
+                <li><strong>Reactivation Date:</strong> ' . getLocalDateTime() . '</li>
+            </ul>
+            
+            <p><strong>What you can do now:</strong></p>
+            <ul>
+                <li>Log in to the EAMS system</li>
+                <li>Access all features available to your role</li>
+                <li>Continue managing events and attendance</li>
+            </ul>
+        </div>
+        
+        <div class="contact-info">
+            <strong>Ready to get back started?</strong><br>
+            Visit <a href="http://localhost/eam_system_v0.1.1/login.php" style="color: #0c5460; text-decoration: underline;">EAMS Login Page</a> to access your account.
+        </div>
+        
+        <p class="instructions">
+            Welcome back to the EAMS community! If you have any questions or need assistance, 
+            please don\'t hesitate to contact our school administration.
+        </p>';
+    
+    return getBaseEmailTemplate('Account Reactivated', $content);
 }
 
 /**
@@ -437,7 +534,7 @@ function sendVerificationEmail($email, $name, $code) {
 function sendUserRemovalEmail($email, $name, $role) {
     $subject = "Account Removal Notice - EAMS";
     $htmlBody = createUserRemovalEmail($name, $email, $role);
-    $altBody = "Dear $name,\n\nYour EAMS account has been permanently removed from our system.\n\nAccount Details:\n- Name: $name\n- Email: $email\n- Role: $role\n- Removal Date: " . date('F j, Y \a\t g:i A') . "\n\nYou will no longer be able to access the EAMS system. If you believe this removal was made in error, please contact the school administration immediately.\n\nThank you for your understanding.\n\nEAMS - San Agustin National High School";
+    $altBody = "Dear $name,\n\nYour EAMS account has been permanently removed from our system.\n\nAccount Details:\n- Name: $name\n- Email: $email\n- Role: $role\n- Removal Date: " . getLocalDateTime() . "\n\nYou will no longer be able to access the EAMS system. If you believe this removal was made in error, please contact the school administration immediately.\n\nThank you for your understanding.\n\nEAMS - San Agustin National High School";
     
     return sendEmail($email, $name, $subject, $htmlBody, $altBody);
 }
@@ -473,7 +570,7 @@ function createUserRejectionEmail($name, $email, $role) {
                 <li><strong>Name:</strong> ' . htmlspecialchars($name) . '</li>
                 <li><strong>Email:</strong> ' . htmlspecialchars($email) . '</li>
                 <li><strong>Requested Role:</strong> ' . htmlspecialchars($role) . '</li>
-                <li><strong>Rejection Date:</strong> ' . date('F j, Y \a\t g:i A') . '</li>
+                <li><strong>Rejection Date:</strong> ' . getLocalDateTime() . '</li>
             </ul>
             
             <p><strong>What this means:</strong></p>
@@ -503,7 +600,23 @@ function createUserRejectionEmail($name, $email, $role) {
 function sendUserApprovalEmail($email, $name, $role) {
     $subject = "Account Approved - EAMS";
     $htmlBody = createUserApprovalEmail($name, $role);
-    $altBody = "Congratulations $name,\n\nYour EAMS account has been approved!\n\nAccount Details:\n- Name: $name\n- Role: $role\n- Approval Date: " . date('F j, Y \a\t g:i A') . "\n\nYou can now log in to the EAMS system at: http://localhost/eam_system_v0.1.1/login.php\n\nWelcome to the EAMS community!\n\nEAMS - San Agustin National High School";
+    $altBody = "Congratulations $name,\n\nYour EAMS account has been approved!\n\nAccount Details:\n- Name: $name\n- Role: $role\n- Approval Date: " . getLocalDateTime() . "\n\nYou can now log in to the EAMS system at: http://localhost/eam_system_v0.1.1/login.php\n\nWelcome to the EAMS community!\n\nEAMS - San Agustin National High School";
+    
+    return sendEmail($email, $name, $subject, $htmlBody, $altBody);
+}
+
+function sendUserDeactivationEmail($email, $name, $role) {
+    $subject = "Account Deactivated - EAMS";
+    $htmlBody = createUserDeactivationEmail($name, $email, $role);
+    $altBody = "Dear $name,\n\nYour EAMS account has been deactivated.\n\nAccount Details:\n- Name: $name\n- Email: $email\n- Role: $role\n- Deactivation Date: " . getLocalDateTime() . "\n\nYou will no longer be able to access the EAMS system. If you believe this deactivation was made in error, please contact the school administration immediately.\n\nThank you for your understanding.\n\nEAMS - San Agustin National High School";
+    
+    return sendEmail($email, $name, $subject, $htmlBody, $altBody);
+}
+
+function sendUserReactivationEmail($email, $name, $role) {
+    $subject = "Account Reactivated - EAMS";
+    $htmlBody = createUserReactivationEmail($name, $email, $role);
+    $altBody = "Dear $name,\n\nYour EAMS account has been reactivated!\n\nAccount Details:\n- Name: $name\n- Email: $email\n- Role: $role\n- Reactivation Date: " . getLocalDateTime() . "\n\nYou can now log in to the EAMS system at: http://localhost/eam_system_v0.1.1/login.php\n\nWelcome back to the EAMS community!\n\nEAMS - San Agustin National High School";
     
     return sendEmail($email, $name, $subject, $htmlBody, $altBody);
 }
@@ -514,7 +627,7 @@ function sendUserApprovalEmail($email, $name, $role) {
 function sendUserRejectionEmail($email, $name, $role) {
     $subject = "Account Application Rejected - EAMS";
     $htmlBody = createUserRejectionEmail($name, $email, $role);
-    $altBody = "Dear $name,\n\nWe regret to inform you that your account application for EAMS has been rejected.\n\nApplication Details:\n- Name: $name\n- Email: $email\n- Requested Role: $role\n- Rejection Date: " . date('F j, Y \a\t g:i A') . "\n\nIf you have questions about this decision, please contact the school administration directly.\n\nThank you for your interest in EAMS.\n\nEAMS - San Agustin National High School";
+    $altBody = "Dear $name,\n\nWe regret to inform you that your account application for EAMS has been rejected.\n\nApplication Details:\n- Name: $name\n- Email: $email\n- Requested Role: $role\n- Rejection Date: " . getLocalDateTime() . "\n\nIf you have questions about this decision, please contact the school administration directly.\n\nThank you for your interest in EAMS.\n\nEAMS - San Agustin National High School";
     
     return sendEmail($email, $name, $subject, $htmlBody, $altBody);
 }

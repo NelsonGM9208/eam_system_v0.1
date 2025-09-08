@@ -1,3 +1,10 @@
+<?php
+define('IN_APP', true);
+require_once '../utils/auth.php';
+
+// Require student role access
+requireRole( 'student');
+?>
 <!DOCTYPE html>
 <!-- Coding by CodingNepal || www.codingnepalweb.com -->
 <html lang="en">
@@ -104,14 +111,14 @@
         </div>
       </div>
     </nav>
-    <!-- JavaScript -->
-      <script src="../assets/js/script.js"></script>
-
       <?php include "../includes/confirm-logout.php"; ?>
 
-        <!-- Bootstrap JS + jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Bootstrap JS + jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JavaScript -->
+    <script src="../assets/js/script.js?v=<?php echo time(); ?>"></script>
     
     </body>
   </html>

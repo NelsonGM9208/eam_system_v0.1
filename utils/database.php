@@ -166,7 +166,19 @@ function getRecordCount($table, $where = '', $params = []) {
         $query .= " WHERE {$where}";
     }
     
-    $result = executeQuery($query, $params);
+    // Generate types string based on parameters
+    $types = '';
+    foreach ($params as $param) {
+        if (is_int($param)) {
+            $types .= 'i';
+        } elseif (is_double($param)) {
+            $types .= 'd';
+        } else {
+            $types .= 's';
+        }
+    }
+    
+    $result = executeQuery($query, $params, $types);
     if (!$result) return false;
     
     $row = mysqli_fetch_assoc($result);

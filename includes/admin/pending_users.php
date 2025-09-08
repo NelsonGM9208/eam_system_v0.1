@@ -18,8 +18,8 @@ if (!$con) {
 $records_per_page = 10;
 $current_page = validateInput($_GET['page'] ?? 1, 'int', 1);
 
-// Get total number of pending users using common utility
-$total_records = getRecordCount('users', "status = 'Pending'");
+// Get total number of pending users using common utility (excluding deactivated accounts)
+$total_records = getRecordCount('users', "status = 'Pending' AND (account_status IS NULL OR account_status != ?)", ['deactivated']);
 if ($total_records === false) {
     echo displayError("Failed to get pending users count.");
     exit;
@@ -30,10 +30,10 @@ $pagination = calculatePagination($total_records, $records_per_page, $current_pa
 
 // Only run the query if there are pending users
 if ($total_records > 0) {
-    // Get pending users with pagination using common utility
+    // Get pending users with pagination using common utility (excluding deactivated accounts)
     $query = "SELECT user_id, firstname, lastname, email, role, status, verification_status, created_at 
               FROM users 
-              WHERE status = 'Pending' 
+              WHERE status = 'Pending' AND (account_status != 'deactivated' OR account_status IS NULL)
               ORDER BY created_at ASC 
               LIMIT ?, ?";
 
@@ -78,9 +78,11 @@ include __DIR__ . "/views/users_table_view.php";
 <div class="modal fade" id="viewUserModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">User Details</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="bx bx-show"></i> User Details
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" id="viewUserContent">
                 <!-- User details will be loaded here via AJAX -->
@@ -96,9 +98,11 @@ include __DIR__ . "/views/users_table_view.php";
 <div class="modal fade" id="approveUserModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirm User Approval</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="bx bx-check-circle"></i> Confirm User Approval
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to approve this user?</p>
@@ -120,9 +124,11 @@ include __DIR__ . "/views/users_table_view.php";
 <div class="modal fade" id="rejectUserModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirm User Rejection</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bx bx-x-circle"></i> Confirm User Rejection
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to reject this user?</p>
@@ -144,9 +150,11 @@ include __DIR__ . "/views/users_table_view.php";
 <div class="modal fade" id="approveAllModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirm Bulk Approval</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="bx bx-check-double"></i> Confirm Bulk Approval
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to approve all <strong id="approveAllCount">0</strong> selected users?</p>
