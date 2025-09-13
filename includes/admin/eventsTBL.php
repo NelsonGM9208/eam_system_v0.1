@@ -135,9 +135,9 @@ if ($total_records > 0) {
                             $event_id = $row['event_id'];
                             $title = htmlspecialchars($row['title']);
                             $description = htmlspecialchars($row['event_description']);
-                            $event_date = date('M d, Y', strtotime($row['event_date']));
-                            $start_time = date('h:i A', strtotime($row['start_time']));
-                            $end_time = date('h:i A', strtotime($row['end_time']));
+                            $event_date = formatEventDate($row['event_date']);
+                            $start_time = formatDisplayTime($row['start_time']);
+                            $end_time = formatDisplayTime($row['end_time']);
                             $location = htmlspecialchars($row['location']);
                             $event_type = htmlspecialchars($row['event_type']);
                             $status = htmlspecialchars($row['event_status']);
@@ -204,11 +204,21 @@ if ($total_records > 0) {
                                                 data-toggle='modal' data-target='#editEventModal' 
                                                 data-event-id='$event_id' title='Edit Event'>
                                             <i class='bx bx-edit'></i>
-                                        </button>
-                                        <button type='button' class='btn btn-danger btn-sm delete-event-btn' 
+                                        </button>";
+                                        
+                                        // Add QR Code button only for approved events that are not finished
+                                        if ($approval_status === 'Approved' && $status !== 'Finished') {
+                                            echo "<button type='button' class='btn btn-success btn-sm generate-qr-btn' 
+                                                    data-toggle='modal' data-target='#eventQRCodeModal' 
+                                                    data-event-id='$event_id' title='Generate QR Code'>
+                                                    <i class='bx bx-qr-scan'></i>
+                                                </button>";
+                                        }
+                                        
+                                        echo "<button type='button' class='btn btn-danger btn-sm delete-event-btn' 
                                                 data-event-id='$event_id' title='Delete Event'>
-                                            <i class='bx bx-trash'></i>
-                                        </button>
+                                                <i class='bx bx-trash'></i>
+                                            </button>
                                     </div>
                                 </td>
                             </tr>";
@@ -427,63 +437,9 @@ if ($total_records > 0) {
     </div>
 </div>
 
-<script>
-$(document).ready(function() {
-    // Auto-update event statuses on page load (silently)
-    function autoUpdateEventStatuses() {
-        $.post('/eam_system_v0.1.1/utils/event_status_updater.php', function(response) {
-            try {
-                const results = JSON.parse(response);
-                if (results.updated > 0) {
-                    console.log(`Auto-updated ${results.updated} event statuses`);
-                    // Optionally show a subtle notification
-                    if (results.updated > 0) {
-                        // Show a subtle toast notification
-                        showStatusUpdateNotification(results.updated);
-                    }
-                }
-            } catch (e) {
-                console.error('Error parsing auto-update response:', e);
-            }
-        }).fail(function() {
-            console.error('Failed to auto-update event statuses');
-        });
-    }
-    
-    // Show subtle notification for status updates
-    function showStatusUpdateNotification(updatedCount) {
-        // Create a subtle notification
-        const notification = $(`
-            <div class="alert alert-info alert-dismissible fade show position-fixed" 
-                 style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
-                <i class="bx bx-info-circle"></i> 
-                Auto-updated ${updatedCount} event status${updatedCount > 1 ? 'es' : ''}
-                <button type="button" class="close" data-dismiss="alert">
-                    <span>&times;</span>
-                </button>
-            </div>
-        `);
-        
-        $('body').append(notification);
-        
-        // Auto-remove after 3 seconds
-        setTimeout(function() {
-            notification.alert('close');
-        }, 3000);
-    }
-    
-    // Run auto-update on page load
-    autoUpdateEventStatuses();
-    
-    // Set up periodic auto-updates every 5 minutes (300,000 ms)
-    setInterval(function() {
-        // Only run if the events page is still active/visible
-        if (document.visibilityState === 'visible' && !document.hidden) {
-            autoUpdateEventStatuses();
-        }
-    }, 300000); // 5 minutes
-    
-});
-</script>
+<!-- Event status auto-update functionality moved to events.js -->
 
-<!-- Note: JavaScript event handlers are now in dashboard.js -->
+<!-- Include QR Code Modal -->
+<?php include __DIR__ . "/modals/event_qr_code.php"; ?>
+
+<!-- Note: JavaScript event handlers are now loaded in main admin.php -->

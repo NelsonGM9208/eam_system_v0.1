@@ -122,7 +122,10 @@ function executeQuery($query, $params = [], $types = '') {
     $con = getDatabaseConnection();
     if (!$con) return false;
     
-    if (empty($params)) {
+    // Check if query has placeholders
+    $hasPlaceholders = strpos($query, '?') !== false;
+    
+    if (empty($params) || !$hasPlaceholders) {
         $result = mysqli_query($con, $query);
         if (!$result) {
             logError("Query failed: " . mysqli_error($con));

@@ -19,8 +19,6 @@ use PHPMailer\PHPMailer\Exception;
  * Get local date and time in Philippines timezone
  */
 function getLocalDateTime() {
-    // Set timezone to Philippines
-    date_default_timezone_set('Asia/Manila');
     return date('F j, Y \a\t g:i A');
 }
 
@@ -628,6 +626,205 @@ function sendUserRejectionEmail($email, $name, $role) {
     $subject = "Account Application Rejected - EAMS";
     $htmlBody = createUserRejectionEmail($name, $email, $role);
     $altBody = "Dear $name,\n\nWe regret to inform you that your account application for EAMS has been rejected.\n\nApplication Details:\n- Name: $name\n- Email: $email\n- Requested Role: $role\n- Rejection Date: " . getLocalDateTime() . "\n\nIf you have questions about this decision, please contact the school administration directly.\n\nThank you for your interest in EAMS.\n\nEAMS - San Agustin National High School";
+    
+    return sendEmail($email, $name, $subject, $htmlBody, $altBody);
+}
+
+/**
+ * Create event approval email template
+ */
+function createEventApprovalEmail($eventData, $notes = '') {
+    $eventTitle = htmlspecialchars($eventData['title']);
+    $eventDate = date('F j, Y', strtotime($eventData['event_date']));
+    $startTime = date('g:i A', strtotime($eventData['start_time']));
+    $endTime = date('g:i A', strtotime($eventData['end_time']));
+    $location = htmlspecialchars($eventData['location']);
+    $eventType = htmlspecialchars($eventData['event_type']);
+    $creatorName = htmlspecialchars($eventData['creator_name']);
+    $approvalDate = getLocalDateTime();
+    
+    $content = '
+    <div class="content-card">
+        <div class="header">
+            <h1>🎉 Event Approved!</h1>
+            <p class="subtitle">Your event has been approved and is now live</p>
+        </div>
+        
+        <div class="content">
+            <div class="success-banner">
+                <i class="icon">✅</i>
+                <h2>Congratulations!</h2>
+                <p>Your event "<strong>' . $eventTitle . '</strong>" has been approved and is now visible to all users.</p>
+            </div>
+            
+            <div class="event-details">
+                <h3>📅 Event Details</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <strong>Event Title:</strong>
+                        <span>' . $eventTitle . '</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Date:</strong>
+                        <span>' . $eventDate . '</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Time:</strong>
+                        <span>' . $startTime . ' - ' . $endTime . '</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Location:</strong>
+                        <span>' . $location . '</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Type:</strong>
+                        <span class="badge ' . ($eventType == 'Exclusive' ? 'badge-info' : 'badge-primary') . '">' . $eventType . '</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Approved On:</strong>
+                        <span>' . $approvalDate . '</span>
+                    </div>
+                </div>
+            </div>';
+    
+    if (!empty($notes)) {
+        $content .= '
+            <div class="admin-notes">
+                <h3>📝 Admin Notes</h3>
+                <div class="notes-content">
+                    <p>' . nl2br(htmlspecialchars($notes)) . '</p>
+                </div>
+            </div>';
+    }
+    
+    $content .= '
+            <div class="next-steps">
+                <h3>🚀 What\'s Next?</h3>
+                <ul>
+                    <li>Your event is now visible to all users in the system</li>
+                    <li>Users can view event details and register for attendance</li>
+                    <li>You can monitor attendance through the admin panel</li>
+                </ul>
+            </div>
+            
+            <div class="cta-section">
+                <a href="http://localhost/eam_system_v0.1.1/pages/admin.php?page=events" class="cta-button">
+                    View All Events
+                </a>
+            </div>
+        </div>
+    </div>';
+    
+    return getBaseEmailTemplate('Event Approved - EAMS', $content);
+}
+
+/**
+ * Create event rejection email template
+ */
+function createEventRejectionEmail($eventData, $reason) {
+    $eventTitle = htmlspecialchars($eventData['title']);
+    $eventDate = date('F j, Y', strtotime($eventData['event_date']));
+    $startTime = date('g:i A', strtotime($eventData['start_time']));
+    $endTime = date('g:i A', strtotime($eventData['end_time']));
+    $location = htmlspecialchars($eventData['location']);
+    $eventType = htmlspecialchars($eventData['event_type']);
+    $creatorName = htmlspecialchars($eventData['creator_name']);
+    $rejectionDate = getLocalDateTime();
+    
+    $content = '
+    <div class="content-card">
+        <div class="header">
+            <h1>❌ Event Rejected</h1>
+            <p class="subtitle">Your event submission requires revision</p>
+        </div>
+        
+        <div class="content">
+            <div class="rejection-banner">
+                <i class="icon">⚠️</i>
+                <h2>Event Not Approved</h2>
+                <p>We regret to inform you that your event "<strong>' . $eventTitle . '</strong>" has been rejected and requires revision.</p>
+            </div>
+            
+            <div class="event-details">
+                <h3>📅 Event Details</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <strong>Event Title:</strong>
+                        <span>' . $eventTitle . '</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Date:</strong>
+                        <span>' . $eventDate . '</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Time:</strong>
+                        <span>' . $startTime . ' - ' . $endTime . '</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Location:</strong>
+                        <span>' . $location . '</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Type:</strong>
+                        <span class="badge ' . ($eventType == 'Exclusive' ? 'badge-info' : 'badge-primary') . '">' . $eventType . '</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Rejected On:</strong>
+                        <span>' . $rejectionDate . '</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="rejection-reason">
+                <h3>📝 Rejection Reason</h3>
+                <div class="reason-content">
+                    <p>' . nl2br(htmlspecialchars($reason)) . '</p>
+                </div>
+            </div>
+            
+            <div class="next-steps">
+                <h3>🔄 What\'s Next?</h3>
+                <ul>
+                    <li>Review the rejection reason above</li>
+                    <li>Make necessary corrections to your event</li>
+                    <li>Resubmit the event for approval</li>
+                    <li>Contact the admin if you need clarification</li>
+                </ul>
+            </div>
+            
+            <div class="cta-section">
+                <a href="http://localhost/eam_system_v0.1.1/pages/sslg.php?page=add_events" class="cta-button">
+                    Create New Event
+                </a>
+            </div>
+        </div>
+    </div>';
+    
+    return getBaseEmailTemplate('Event Rejected - EAMS', $content);
+}
+
+/**
+ * Send event approval email
+ */
+function sendEventApprovalEmail($eventData, $notes = '') {
+    $email = $eventData['creator_email'];
+    $name = $eventData['creator_name'];
+    $subject = "Event Approved - EAMS";
+    $htmlBody = createEventApprovalEmail($eventData, $notes);
+    $altBody = "Congratulations $name,\n\nYour event \"" . $eventData['title'] . "\" has been approved!\n\nEvent Details:\n- Title: " . $eventData['title'] . "\n- Date: " . date('F j, Y', strtotime($eventData['event_date'])) . "\n- Time: " . date('g:i A', strtotime($eventData['start_time'])) . " - " . date('g:i A', strtotime($eventData['end_time'])) . "\n- Location: " . $eventData['location'] . "\n- Type: " . $eventData['event_type'] . "\n- Approved On: " . getLocalDateTime() . "\n\n" . (!empty($notes) ? "Admin Notes:\n" . $notes . "\n\n" : "") . "Your event is now visible to all users in the system.\n\nEAMS - San Agustin National High School";
+    
+    return sendEmail($email, $name, $subject, $htmlBody, $altBody);
+}
+
+/**
+ * Send event rejection email
+ */
+function sendEventRejectionEmail($eventData, $reason) {
+    $email = $eventData['creator_email'];
+    $name = $eventData['creator_name'];
+    $subject = "Event Rejected - EAMS";
+    $htmlBody = createEventRejectionEmail($eventData, $reason);
+    $altBody = "Dear $name,\n\nWe regret to inform you that your event \"" . $eventData['title'] . "\" has been rejected.\n\nEvent Details:\n- Title: " . $eventData['title'] . "\n- Date: " . date('F j, Y', strtotime($eventData['event_date'])) . "\n- Time: " . date('g:i A', strtotime($eventData['start_time'])) . " - " . date('g:i A', strtotime($eventData['end_time'])) . "\n- Location: " . $eventData['location'] . "\n- Type: " . $eventData['event_type'] . "\n- Rejected On: " . getLocalDateTime() . "\n\nRejection Reason:\n" . $reason . "\n\nPlease review the reason and make necessary corrections before resubmitting.\n\nEAMS - San Agustin National High School";
     
     return sendEmail($email, $name, $subject, $htmlBody, $altBody);
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 07, 2025 at 10:08 AM
+-- Generation Time: Sep 13, 2025 at 01:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -57,8 +57,7 @@ CREATE TABLE `enrollment` (
 --
 
 INSERT INTO `enrollment` (`enrollment_id`, `student_id`, `section_id`, `enrollment_date`, `updated_at`, `status`) VALUES
-(8, 18, 1, '2025-09-07 00:00:00', '2025-09-07 08:01:28', 'Inactive'),
-(9, 18, 1, '2025-09-07 00:00:00', '2025-09-07 08:06:42', 'Inactive');
+(1, 3, 2, '2025-09-13 00:00:00', '2025-09-13 09:25:08', 'Active');
 
 -- --------------------------------------------------------
 
@@ -85,13 +84,6 @@ CREATE TABLE `events` (
   `approval_status` enum('Pending','Approved','Rejected') NOT NULL DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `events`
---
-
-INSERT INTO `events` (`event_id`, `title`, `event_description`, `event_date`, `start_time`, `end_time`, `location`, `event_type`, `event_status`, `created_at`, `created_by`, `creator_role`, `updated_by`, `updated_at`, `abs_penalty`, `approval_status`) VALUES
-(3, 'New', 'New One', '2025-09-06', '15:22:00', '20:23:00', 'Sagbayan Gymnasium', 'Exclusive', 'Upcoming', '2025-09-06 05:23:34', 3, 'admin', 3, '2025-09-07 06:40:47', 90, 'Approved');
-
 -- --------------------------------------------------------
 
 --
@@ -102,13 +94,6 @@ CREATE TABLE `event_section` (
   `event_id` int(11) NOT NULL,
   `section_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `event_section`
---
-
-INSERT INTO `event_section` (`event_id`, `section_id`) VALUES
-(3, 1);
 
 -- --------------------------------------------------------
 
@@ -183,8 +168,7 @@ CREATE TABLE `section` (
 --
 
 INSERT INTO `section` (`section_id`, `grade`, `section`, `description`, `teacher_id`, `created_at`, `updated_at`) VALUES
-(1, '12', 'ICT', 'TVL - Information and Communication Technology Miss you', 16, '2025-09-06 14:07:18', '2025-09-07 07:26:08'),
-(13, '12', 'STEM', 'Sayang Tanan Evening Moments', 17, '2025-09-06 14:50:07', '2025-09-07 07:27:10');
+(2, '12', 'ICT', 'be happy', 4, '2025-09-11 15:29:58', '2025-09-11 15:29:58');
 
 -- --------------------------------------------------------
 
@@ -204,7 +188,7 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`student_id`, `lrn`, `created_at`, `mis_id`) VALUES
-(18, '118398140001', '2025-09-06 15:14:21', '429023');
+(3, '118398140001', '2025-09-13 09:31:05', '428935');
 
 -- --------------------------------------------------------
 
@@ -222,9 +206,7 @@ CREATE TABLE `teacher` (
 --
 
 INSERT INTO `teacher` (`teacher_id`, `course`) VALUES
-(16, '12-Philosophy'),
-(17, '12-Physics'),
-(19, '11-Probability and Statistics');
+(4, '9 - Psychology | Love');
 
 -- --------------------------------------------------------
 
@@ -246,19 +228,19 @@ CREATE TABLE `users` (
   `firstname` varchar(50) NOT NULL,
   `lastname` varchar(50) NOT NULL,
   `gender` enum('Male','Female') NOT NULL,
-  `updated_by` int(11) DEFAULT NULL
+  `updated_by` int(11) DEFAULT NULL,
+  `account_status` enum('active','deactivated') DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `email`, `password`, `role`, `profile_photo`, `created_at`, `updated_at`, `status`, `code`, `verification_status`, `firstname`, `lastname`, `gender`, `updated_by`) VALUES
-(3, 'nherrera@sanagustinnhs.net', '$2y$10$N/2o2bjkkrjeU6vRo7q6SOwGhXN/tz7jrWO7NB8aj4V0SfB6lcLRO', 'admin', NULL, '2025-08-30 05:39:57', '2025-09-02 14:50:25', 'Approved', 0, 'verified', 'Nelson', 'Herrera', 'Male', 0),
-(16, 'pr1researchers@gmail.com', '$2y$10$9TqGrd.kBRZuaW7JKC3fYOA85jNz/..Yo6vO2qEAFwPDgNgTJVwa.', 'teacher', NULL, '2025-09-06 09:02:08', '2025-09-07 06:00:52', 'Approved', 401206, 'verified', 'John', 'Doe', 'Male', 3),
-(17, 'nelsonherrera920815@gmail.com', '$2y$10$RgdvMrxd7KpSsTVkYgpP1u9rT/ECcKo53S0/YpBbzbfXCSiTIvxRq', 'teacher', NULL, '2025-09-06 14:52:26', '2025-09-06 14:54:03', 'Approved', 0, 'verified', 'Default', 'Teacher', 'Female', 3),
-(18, 'nelsonherrera9208@gmail.com', '$2y$10$NGyKeb8IRSv4feEtKsQPdu977qHW2EiUJx3e2h2BoI87hqdVXhDry', 'student', NULL, '2025-09-06 15:14:21', '2025-09-06 15:46:40', 'Approved', 0, 'verified', 'Jave', 'Herrera', 'Male', NULL),
-(19, 'hvitorillo@sanagustinnhs.net', '$2y$10$SCGvcDo5f6oDTrl7trUS3uoqajlWlx0yStU3HcI/ADOQer7zdNlwm', 'teacher', NULL, '2025-09-07 06:00:22', '2025-09-07 06:00:22', 'Pending', 532121, 'notverified', 'Jack', 'Sparrow', 'Male', NULL);
+INSERT INTO `users` (`user_id`, `email`, `password`, `role`, `profile_photo`, `created_at`, `updated_at`, `status`, `code`, `verification_status`, `firstname`, `lastname`, `gender`, `updated_by`, `account_status`) VALUES
+(1, 'nherrera@sanagustinnhs.net', '$2y$10$5Z92zGE1rseO8sqFXkrvg.K9qbfrE7WJioWeVCwU75.UlFkEg79X2', 'admin', NULL, '2025-09-10 13:17:30', '2025-09-10 13:26:40', 'Approved', 0, 'verified', 'Nelson', 'Herrera', 'Male', NULL, 'active'),
+(2, 'pr1researchers@gmail.com', '$2y$10$kVPlFR6BmPod79wyd.OxN.0z46.mIlhCTrMLZRUYZ6q7tnAC4vU1a', 'sslg', NULL, '2025-09-10 13:31:35', '2025-09-10 13:32:54', 'Approved', 0, 'verified', 'John', 'Doe', 'Male', 1, 'active'),
+(3, 'nelsonherrera9208@gmail.com', '$2y$10$Oekd1Dzbknhe41PzBZilz.wgjW4KuRurwTJnRND4WbSxOF35nK/K2', 'student', NULL, '2025-09-10 13:34:28', '2025-09-13 10:15:11', 'Approved', 0, 'verified', 'Jave', 'Herrera', 'Male', 1, 'active'),
+(4, 'theprettiestgirl@ccordingtomother.edu', '$2y$10$nSuljDl1DKZFQd36v56D9eIgoC4zzVCsFzrf7T8qs9UmiAt6C2NCG', 'teacher', NULL, '2025-09-10 13:38:24', '2025-09-13 08:44:09', 'Approved', 222051, 'verified', 'My girl', 'is Her', 'Female', 1, 'active');
 
 --
 -- Indexes for dumped tables
@@ -268,17 +250,13 @@ INSERT INTO `users` (`user_id`, `email`, `password`, `role`, `profile_photo`, `c
 -- Indexes for table `attendance`
 --
 ALTER TABLE `attendance`
-  ADD PRIMARY KEY (`attendance_id`),
-  ADD KEY `student_id` (`student_id`),
-  ADD KEY `event_id` (`event_id`);
+  ADD PRIMARY KEY (`attendance_id`);
 
 --
 -- Indexes for table `enrollment`
 --
 ALTER TABLE `enrollment`
-  ADD PRIMARY KEY (`enrollment_id`),
-  ADD KEY `student_id` (`student_id`),
-  ADD KEY `section_id` (`section_id`);
+  ADD PRIMARY KEY (`enrollment_id`);
 
 --
 -- Indexes for table `events`
@@ -290,50 +268,19 @@ ALTER TABLE `events`
 -- Indexes for table `event_section`
 --
 ALTER TABLE `event_section`
-  ADD PRIMARY KEY (`event_id`,`section_id`),
-  ADD KEY `section_id` (`section_id`);
-
---
--- Indexes for table `excuse_letter`
---
-ALTER TABLE `excuse_letter`
-  ADD PRIMARY KEY (`letter_id`),
-  ADD KEY `fk_excuse_student` (`student_id`),
-  ADD KEY `fk_excuse_section` (`section_id`);
-
---
--- Indexes for table `logs`
---
-ALTER TABLE `logs`
-  ADD PRIMARY KEY (`log_id`);
-
---
--- Indexes for table `notification`
---
-ALTER TABLE `notification`
-  ADD PRIMARY KEY (`notification_id`);
+  ADD PRIMARY KEY (`event_id`);
 
 --
 -- Indexes for table `section`
 --
 ALTER TABLE `section`
-  ADD PRIMARY KEY (`section_id`),
-  ADD KEY `teacher_id` (`teacher_id`);
+  ADD PRIMARY KEY (`section_id`);
 
 --
 -- Indexes for table `students`
 --
 ALTER TABLE `students`
-  ADD PRIMARY KEY (`student_id`),
-  ADD UNIQUE KEY `lrn` (`lrn`),
-  ADD UNIQUE KEY `unique_lrn` (`lrn`),
-  ADD UNIQUE KEY `lrn_unique` (`lrn`);
-
---
--- Indexes for table `teacher`
---
-ALTER TABLE `teacher`
-  ADD PRIMARY KEY (`teacher_id`);
+  ADD KEY `student_to_user` (`student_id`);
 
 --
 -- Indexes for table `users`
@@ -356,87 +303,41 @@ ALTER TABLE `attendance`
 -- AUTO_INCREMENT for table `enrollment`
 --
 ALTER TABLE `enrollment`
-  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `excuse_letter`
+-- AUTO_INCREMENT for table `event_section`
 --
-ALTER TABLE `excuse_letter`
-  MODIFY `letter_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `logs`
---
-ALTER TABLE `logs`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `notification`
---
-ALTER TABLE `notification`
-  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `event_section`
+  MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `section`
 --
 ALTER TABLE `section`
-  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `attendance`
+-- Constraints for table `students`
 --
-ALTER TABLE `attendance`
-  ADD CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`student_id`),
-  ADD CONSTRAINT `attendance_ibfk_2` FOREIGN KEY (`event_id`) REFERENCES `events` (`event_id`);
-
---
--- Constraints for table `enrollment`
---
-ALTER TABLE `enrollment`
-  ADD CONSTRAINT `enrolled_student` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`),
-  ADD CONSTRAINT `enrollment_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`);
-
---
--- Constraints for table `event_section`
---
-ALTER TABLE `event_section`
-  ADD CONSTRAINT `event_section_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `events` (`event_id`),
-  ADD CONSTRAINT `event_section_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`);
-
---
--- Constraints for table `excuse_letter`
---
-ALTER TABLE `excuse_letter`
-  ADD CONSTRAINT `fk_excuse_section` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_excuse_student` FOREIGN KEY (`student_id`) REFERENCES `student` (`student_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `section`
---
-ALTER TABLE `section`
-  ADD CONSTRAINT `section_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `users` (`user_id`);
-
---
--- Constraints for table `teacher`
---
-ALTER TABLE `teacher`
-  ADD CONSTRAINT `teacher_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+ALTER TABLE `students`
+  ADD CONSTRAINT `student_to_user` FOREIGN KEY (`student_id`) REFERENCES `users` (`user_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

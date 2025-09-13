@@ -52,6 +52,7 @@ requireRole('admin');
     <!-- Logout Confirmation Modal -->
     <?php include "../includes/confirm-logout.php"; ?>
 
+    <!-- footer -->
     <?php include "../includes/footer.php"; ?>
   </main>
 
@@ -66,6 +67,8 @@ requireRole('admin');
   <script src="../assets/js/users.js?v=<?php echo time(); ?>"></script>
   <script src="../assets/js/classes.js?v=<?php echo time(); ?>"></script>
   <script src="../assets/js/attendance.js?v=<?php echo time(); ?>"></script>
+  <script src="../includes/admin/dashboard/assets/admin_dashboard.js?v=<?php echo time(); ?>"></script>
+  <script src="../includes/admin/js/events.js?v=<?php echo time(); ?>"></script>
 </body>
 
 </html>

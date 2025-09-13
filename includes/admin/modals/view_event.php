@@ -43,11 +43,11 @@ if (!$event) {
 }
 
 // Format dates and times
-$event_date = date('F d, Y (l)', strtotime($event['event_date']));
-$start_time = date('h:i A', strtotime($event['start_time']));
-$end_time = date('h:i A', strtotime($event['end_time']));
-$created_at = date('F d, Y h:i A', strtotime($event['created_at']));
-$updated_at = !empty($event['updated_at']) ? date('F d, Y h:i A', strtotime($event['updated_at'])) : 'N/A';
+$event_date = formatEventDateWithDay($event['event_date']);
+$start_time = formatDisplayTime($event['start_time']);
+$end_time = formatDisplayTime($event['end_time']);
+$created_at = formatDisplayDate($event['created_at'], 'F d, Y h:i A');
+$updated_at = !empty($event['updated_at']) ? formatDisplayDate($event['updated_at'], 'F d, Y h:i A') : 'N/A';
 
 // Status badge colors
 $status_badge = '';

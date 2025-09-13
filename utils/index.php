@@ -10,11 +10,15 @@ if (!defined('IN_APP')) {
     exit();
 }
 
+// Set global timezone for the entire application
+date_default_timezone_set('Asia/Manila');
+
 // Include all utility files in correct order
 require_once __DIR__ . '/errors.php';      // Error handling first
 require_once __DIR__ . '/security.php';    // Security utilities
 require_once __DIR__ . '/database.php';    // Database operations (needs logError)
 require_once __DIR__ . '/pagination.php';  // Pagination utilities
 require_once __DIR__ . '/ui.php';          // UI utilities
+require_once __DIR__ . '/date_utils.php';  // Date and time utilities
 require_once __DIR__ . '/email.php';       // Email utilities
 ?>

@@ -1,7 +1,7 @@
 <nav class="navbar">
     <div class="logo_item">
         <i class="bx bx-menu" id="sidebarOpen"></i>
-        <img src="../assets/images/logo.png" alt=""></i>Events Attendance Management System
+        <img src="https://mis.sanagustinnhs.net/assets/images/sanhs_logo.png" alt=""></i>Events Attendance Management System
     </div>
 
     <!--<div class="search_bar">

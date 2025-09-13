@@ -4,10 +4,15 @@
  * This endpoint shows the current time in different timezones for debugging
  */
 
+// Define IN_APP constant for utility access
+if (!defined('IN_APP')) {
+    define('IN_APP', true);
+}
+
 header('Content-Type: application/json');
 
-// Set timezone to Philippines
-date_default_timezone_set('Asia/Manila');
+// Include utils to get global timezone configuration
+require_once __DIR__ . '/../utils/index.php';
 
 $timezone_info = [
     'server_timezone' => date_default_timezone_get(),

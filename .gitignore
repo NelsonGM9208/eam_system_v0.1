@@ -26,3 +26,60 @@ node_modules/
 # Other temporary files
 *.tmp
 *.swp
+
+# Database files and backups
+*.sql
+*.db
+*.sqlite
+*.sqlite3
+database_backups/
+backups/
+
+# Environment and configuration files
+.env
+.env.local
+.env.production
+.env.staging
+config.php
+database.php
+settings.php
+
+# Upload directories (user content)
+uploads/
+files/
+documents/
+images/
+videos/
+attachments/
+
+# Cache and temporary directories
+cache/
+tmp/
+temp/
+sessions/
+
+# Generated QR codes and exports
+qr_codes/
+exports/
+generated_files/
+
+# Debug and test files
+debug_*.php
+test_*.php
+*_test.php
+*_debug.php
+
+# XAMPP specific files
+xampp/
+htdocs_backup/
+
+# Security sensitive files
+.htaccess
+.htpasswd
+security/
+private/
+
+# Log files
+logs/
+error_log
+access_log

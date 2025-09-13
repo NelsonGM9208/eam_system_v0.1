@@ -594,15 +594,22 @@ function initializeEventStatusAutoUpdate() {
     function autoUpdateEventStatuses() {
       $.post('/eam_system_v0.1.1/utils/event_status_updater.php', function(response) {
         try {
-          const results = JSON.parse(response);
-          if (results.updated > 0) {
+          // Handle both string and object responses
+          let results;
+          if (typeof response === 'string') {
+            results = JSON.parse(response);
+          } else {
+            results = response;
+          }
+          
+          if (results && results.updated > 0) {
             console.log(`Auto-updated ${results.updated} event statuses`);
           }
         } catch (e) {
-          console.error('Error parsing auto-update response:', e);
+          console.error('Error parsing auto-update response:', e, 'Response:', response);
         }
-      }).fail(function() {
-        console.error('Failed to auto-update event statuses');
+      }).fail(function(xhr, status, error) {
+        console.error('Failed to auto-update event statuses:', error);
       });
     }
     

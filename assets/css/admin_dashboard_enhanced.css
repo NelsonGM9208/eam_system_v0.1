@@ -1,0 +1,286 @@
+/**
+ * Enhanced Admin Dashboard Styles
+ * Improved styling for admin dashboard components
+ */
+
+/* Gradient Backgrounds */
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff 0%, #6610f2 100%) !important;
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%) !important;
+}
+
+/* Card Enhancements */
+.card {
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-2px);
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    border: none !important;
+    padding: 1rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Statistics Cards */
+.border-left-primary {
+    border-left: 4px solid #007bff !important;
+}
+
+.border-left-success {
+    border-left: 4px solid #28a745 !important;
+}
+
+.border-left-info {
+    border-left: 4px solid #17a2b8 !important;
+}
+
+.border-left-warning {
+    border-left: 4px solid #ffc107 !important;
+}
+
+/* Text Styling */
+.text-xs {
+    font-size: 0.75rem;
+}
+
+.font-weight-bold {
+    font-weight: 700 !important;
+}
+
+.fw-bold {
+    font-weight: 700 !important;
+}
+
+.fw-medium {
+    font-weight: 500 !important;
+}
+
+/* Icon Styling */
+.bx {
+    font-size: 1.5rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .h5 {
+        font-size: 1.1rem;
+    }
+    
+    .h4 {
+        font-size: 1.3rem;
+    }
+    
+    .h3 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Animation Classes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Custom Background Colors for Statistics */
+.bg-attendance-present {
+    background-color: rgba(40, 167, 69, 0.1) !important;
+}
+
+.bg-attendance-late {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+.bg-attendance-absent {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+.bg-attendance-excused {
+    background-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Ensure consistent card heights */
+.row.g-3 .card {
+    height: 100%;
+}
+
+/* Prevent layout shifts in admin dashboard */
+.admin-dashboard .card {
+    min-height: 150px;
+}
+
+.admin-dashboard .card-body {
+    min-height: 80px;
+}
+
+/* Reduce subcard sizes */
+.admin-dashboard .card-header {
+    padding: 0.75rem 1rem;
+}
+
+.admin-dashboard .card-body {
+    padding: 1rem;
+}
+
+/* Smaller statistics boxes */
+.admin-dashboard .p-1 {
+    padding: 0.25rem !important;
+}
+
+.admin-dashboard .p-2 {
+    padding: 0.5rem !important;
+}
+
+.admin-dashboard .h4 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.admin-dashboard .small {
+    font-size: 0.8rem;
+}
+
+/* Consistent statistics display */
+.admin-dashboard .h4,
+.admin-dashboard .h5 {
+    min-height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Prevent text overflow */
+.admin-dashboard .text-xs {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Ensure consistent spacing */
+.admin-dashboard .row.g-2 > * {
+    padding: 0.25rem;
+}
+
+.admin-dashboard .row.g-3 > * {
+    padding: 0.5rem;
+}
+
+/* Better spacing for statistics */
+.g-2 > * {
+    padding: 0.25rem;
+}
+
+.g-3 > * {
+    padding: 0.5rem;
+}
+
+/* Enhanced button styling */
+.btn {
+    border-radius: 6px !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Table enhancements */
+.table {
+    margin-bottom: 0 !important;
+}
+
+.table th {
+    border-top: none !important;
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+    padding: 0.75rem;
+}
+
+.table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.status-active {
+    background-color: #28a745;
+}
+
+.status-pending {
+    background-color: #ffc107;
+}
+
+.status-inactive {
+    background-color: #dc3545;
+}

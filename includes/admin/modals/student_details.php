@@ -3,7 +3,7 @@ if (!defined('IN_APP')) {
     define('IN_APP', true);
 }
 
-require "../../../utils/index.php";
+require_once __DIR__ . "/../../../utils/index.php";
 
 // Get database connection using utils
 $con = getDatabaseConnection();

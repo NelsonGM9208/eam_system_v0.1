@@ -31,8 +31,6 @@ function updateAllEventStatuses() {
             throw new Exception("Failed to fetch events: " . mysqli_error($con));
         }
         
-        // Set timezone to Philippines
-        date_default_timezone_set('Asia/Manila');
         $now = new DateTime();
         
         while ($event = mysqli_fetch_assoc($result)) {
@@ -84,36 +82,18 @@ function updateAllEventStatuses() {
     return $results;
 }
 
-/**
- * Get the correct status for a specific event
- * @param string $event_date Event date (Y-m-d format)
- * @param string $start_time Start time (H:i:s format)
- * @param string $end_time End time (H:i:s format)
- * @return string The calculated status
- */
-function getEventStatus($event_date, $start_time, $end_time) {
-    // Set timezone to Philippines
-    date_default_timezone_set('Asia/Manila');
-    
-    $now = new DateTime();
-    $event_start = new DateTime($event_date . ' ' . $start_time);
-    $event_end = new DateTime($event_date . ' ' . $end_time);
-    
-    if ($now < $event_start) {
-        return 'Upcoming';
-    } elseif ($now >= $event_start && $now <= $event_end) {
-        return 'Ongoing';
-    } else {
-        return 'Finished';
-    }
-}
+// Function getEventStatus() is already defined in utils/date_utils.php
 
-// If this file is called directly, update all event statuses
-if (basename($_SERVER['PHP_SELF']) === 'event_status_updater.php') {
+// If this file is called directly or via AJAX, update all event statuses
+if (basename($_SERVER['PHP_SELF']) === 'event_status_updater.php' || 
+    ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST))) {
+    
     $results = updateAllEventStatuses();
     
+    // Ensure we return proper JSON
     header('Content-Type: application/json');
-    echo json_encode($results);
+    header('Cache-Control: no-cache, must-revalidate');
+    echo json_encode($results, JSON_UNESCAPED_UNICODE);
     exit;
 }
 ?>

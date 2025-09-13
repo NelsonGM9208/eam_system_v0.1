@@ -77,6 +77,20 @@
     background-color: #f8f9fa;
 }
 
+/* Ensure table containers don't cause horizontal overflow */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.card {
+    overflow: visible; /* Allow content to extend beyond card boundaries if needed */
+}
+
+.container-fluid {
+    overflow-x: auto; /* Allow horizontal scrolling if content is too wide */
+}
+
 /* Consistent button group styling */
 .btn-group .btn {
     border-radius: 0.25rem;
@@ -99,12 +113,52 @@
 /* Consistent empty state styling */
 .table tbody tr td[colspan] {
     padding: 3rem 1rem;
+    vertical-align: middle;
+    height: 400px;
 }
 
 .table tbody tr td[colspan] i {
     font-size: 3rem;
     color: #6c757d;
     margin-bottom: 1rem;
+}
+
+/* Enhanced empty state for classes */
+.table tbody tr td[colspan] .d-flex {
+    min-height: 300px;
+    padding: 2rem 0;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    left: 0;
+    right: 0;
+}
+
+.table tbody tr td[colspan] h4 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    text-align: center;
+    width: 100%;
+}
+
+.table tbody tr td[colspan] p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.table tbody tr td[colspan] .btn-lg {
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 0.5rem;
+    margin: 0 auto;
+    display: block;
 }
 
 /* Consistent pagination styling */

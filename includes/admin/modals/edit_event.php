@@ -38,24 +38,11 @@ if (!$event) {
 }
 
 // Format dates for input fields
-$event_date = date('Y-m-d', strtotime($event['event_date']));
-$start_time = date('H:i', strtotime($event['start_time']));
-$end_time = date('H:i', strtotime($event['end_time']));
+$event_date = formatInputDate($event['event_date']);
+$start_time = formatInputTime($event['start_time']);
+$end_time = formatInputTime($event['end_time']);
 
-// Function to automatically determine event status based on date and time
-function getEventStatus($event_date, $start_time, $end_time) {
-    $now = new DateTime();
-    $event_start = new DateTime($event_date . ' ' . $start_time);
-    $event_end = new DateTime($event_date . ' ' . $end_time);
-    
-    if ($now < $event_start) {
-        return 'Upcoming';
-    } elseif ($now >= $event_start && $now <= $event_end) {
-        return 'Ongoing';
-    } else {
-        return 'Finished';
-    }
-}
+// Function getEventStatus() is already defined in utils/date_utils.php
 
 // Get the automatically calculated status
 $auto_status = getEventStatus($event_date, $start_time, $end_time);

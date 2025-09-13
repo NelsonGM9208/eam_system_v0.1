@@ -224,6 +224,9 @@ if (isset($_POST['login'])) {
                 $_SESSION['email'] = $email;
                 $_SESSION['user_id'] = $fetch['user_id'];
                 $_SESSION['role'] = $fetch['role'];
+                $_SESSION['firstname'] = $fetch['firstname'];
+                $_SESSION['lastname'] = $fetch['lastname'];
+                $_SESSION['login_time'] = getCurrentDateTime('Y-m-d H:i:s');
 
                 $status = $fetch['verification_status'];
                 if ($status == 'verified') {

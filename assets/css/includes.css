@@ -326,6 +326,8 @@ body.dark .main-content * {
   background: #f8f9fa;
   transition: margin-left 0.5s ease;
   /* Smooth transition for margin-left */
+  min-width: 0; /* Prevent flex item from overflowing */
+  overflow-x: auto; /* Allow horizontal scrolling if needed */
 }
 
 /* When Sidebar is Closed */
@@ -730,7 +732,7 @@ body.modal-active .sidebar *,
 
   /* Make sure all content is scrollable */
   body {
-    overflow-x: hidden;
+    overflow-x: auto; /* Changed from hidden to auto to prevent content cutoff */
   }
 
   /* Dashboard title spacing */

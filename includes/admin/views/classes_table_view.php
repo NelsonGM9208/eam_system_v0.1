@@ -177,13 +177,17 @@ if ($total_records > 0) {
                 <?php endwhile; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="8" class="text-center py-4">
-                        <div class="d-flex flex-column align-items-center justify-content-center">
-                            <i class="bx bx-book-open text-muted" style="font-size: 3rem;"></i>
-                            <h5 class="text-muted mt-3">No Classes Found</h5>
-                            <p class="text-muted">Start by creating your first class section.</p>
-                            <button class="btn btn-primary" data-toggle="modal" data-target="#addClassModal">
-                                <i class="bx bx-plus"></i> Add First Class
+                    <td colspan="8" class="text-center" style="padding: 60px 20px;">
+                        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px;">
+                            <div class="mb-4">
+                                <i class="bx bx-book-open text-muted" style="font-size: 4rem; opacity: 0.5;"></i>
+                            </div>
+                            <h4 class="text-muted mb-3 font-weight-normal">No Classes Found</h4>
+                            <p class="text-muted mb-4" style="max-width: 400px; line-height: 1.6;">
+                                Start by creating your first class section to organize your students and manage their attendance.
+                            </p>
+                            <button class="btn btn-primary btn-lg px-4" data-toggle="modal" data-target="#addClassModal">
+                                <i class="bx bx-plus mr-2"></i> Add First Class
                             </button>
                         </div>
                     </td>

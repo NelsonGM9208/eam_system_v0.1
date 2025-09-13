@@ -17,6 +17,7 @@ requireRole('sslg');
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <title>SSLG Page</title>
   <link rel="stylesheet" href="../assets/css/includes.css" />
+  <link rel="stylesheet" href="../assets/css/sslg_dashboard.css" />
 </head>
 
 <body>
@@ -58,6 +59,7 @@ requireRole('sslg');
     <!-- Logout Confirmation Modal -->
     <?php include "../includes/confirm-logout.php"; ?>
 
+    <!-- footer -->
     <?php include "../includes/footer.php"; ?>
   </main>
 

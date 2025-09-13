@@ -87,10 +87,13 @@ function initializeFilters() {
     if (remark) $('#remarkFilter').val(remark);
     if (search) $('#attendanceSearch').val(search);
     
-    // Apply initial filters after a short delay to ensure DOM is ready
-    setTimeout(() => {
-        filterAttendanceTable();
-    }, 100);
+    // Only apply filters if there are actual filter values
+    if (grade || event || remark || search) {
+        // Apply initial filters after a short delay to ensure DOM is ready
+        setTimeout(() => {
+            filterAttendanceTable();
+        }, 100);
+    }
 }
 
 /**
@@ -126,7 +129,7 @@ function filterAttendanceTable() {
         const eventTitle = ($row.find('td:eq(1)').text() || '').toLowerCase();
         const remark = ($row.find('td:eq(5) .badge').text() || '').trim();
         const gradeSection = ($row.find('td:eq(1) small').text() || '').toLowerCase();
-        const classInfo = ($row.find('td:eq(7)').text() || '').toLowerCase(); // Class info is in the last column
+        const classInfo = ($row.find('td:eq(1) small').text() || '').toLowerCase(); // Class info is in the event column
         
         let showRow = true;
         
@@ -155,8 +158,14 @@ function filterAttendanceTable() {
         // Class filter
         if (classFilter) {
             const sectionId = $row.find('.view-attendance-btn').data('section-id');
-            if (sectionId && sectionId !== classFilter) {
+            if (sectionId && sectionId != classFilter) {
                 showRow = false;
+            } else if (!sectionId) {
+                // If no section ID data attribute, try to match by grade/section text
+                const gradeMatch = classInfo.includes('grade ' + classFilter.toLowerCase());
+                if (!gradeMatch) {
+                    showRow = false;
+                }
             }
         }
         
@@ -266,7 +275,7 @@ function viewAttendance(attendanceId) {
             const data = JSON.parse(response);
             if (data.success) {
                 // Load the modal content
-                $('#viewAttendanceContent').load(`/eam_system_v0.1.1/includes/admin/modals/view_attendance.php?id=${attendanceId}`, function(response, status, xhr) {
+                    $('#viewAttendanceContent').load(`../includes/admin/modals/view_attendance.php?id=${attendanceId}`, function(response, status, xhr) {
                     if (status === "error") {
                         console.error('Error loading modal:', xhr.status, xhr.statusText);
                         $('#viewAttendanceContent').html(`
@@ -328,12 +337,6 @@ function exportAttendance() {
     
     if (!format) {
         showAlert('error', 'Please select an export format');
-        return;
-    }
-    
-    // Show confirmation
-    const confirmMessage = `Export attendance data as ${format.toUpperCase()}?`;
-    if (!confirm(confirmMessage)) {
         return;
     }
     

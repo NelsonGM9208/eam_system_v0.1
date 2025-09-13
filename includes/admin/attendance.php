@@ -160,8 +160,8 @@ $remarks = ['Present', 'Late', 'Absent', 'Excused'];
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if ($attendance && is_array($attendance) && count($attendance) > 0): ?>
-                        <?php foreach ($attendance as $record): ?>
+                    <?php if ($attendance && mysqli_num_rows($attendance) > 0): ?>
+                        <?php while ($record = mysqli_fetch_assoc($attendance)): ?>
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -247,7 +247,7 @@ $remarks = ['Present', 'Late', 'Absent', 'Excused'];
                                     </div>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
+                        <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
                             <td colspan="8" class="text-center py-3">
@@ -327,17 +327,12 @@ $remarks = ['Present', 'Late', 'Absent', 'Excused'];
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="exportEvent">Event (Optional)</label>
-                        <select class="form-control" id="exportEvent" name="event">
-                            <option value="">All Events</option>
-                            <?php if ($events): ?>
-                                <?php foreach ($events as $event): ?>
-                                    <option value="<?php echo $event['event_id']; ?>">
-                                        <?php echo htmlspecialchars($event['title']); ?> (<?php echo date('M d, Y', strtotime($event['event_date'])); ?>)
-                                    </option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
+                        <label for="exportDateFrom">Date From</label>
+                        <input type="date" class="form-control" id="exportDateFrom" name="date_from" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exportDateTo">Date To</label>
+                        <input type="date" class="form-control" id="exportDateTo" name="date_to" required>
                     </div>
                     <div class="form-group">
                         <label for="exportGrade">Grade (Optional)</label>
@@ -347,19 +342,6 @@ $remarks = ['Present', 'Late', 'Absent', 'Excused'];
                                 <?php foreach ($grades as $grade): ?>
                                     <option value="<?php echo htmlspecialchars($grade['grade']); ?>">
                                         Grade <?php echo htmlspecialchars($grade['grade']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="exportClass">Class (Optional)</label>
-                        <select class="form-control" id="exportClass" name="class">
-                            <option value="">All Classes</option>
-                            <?php if ($classes): ?>
-                                <?php foreach ($classes as $class): ?>
-                                    <option value="<?php echo $class['section_id']; ?>">
-                                        Grade <?php echo htmlspecialchars($class['grade']); ?> - <?php echo htmlspecialchars($class['section']); ?>
                                     </option>
                                 <?php endforeach; ?>
                             <?php endif; ?>
