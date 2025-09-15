@@ -88,9 +88,9 @@ if (!defined('IN_APP')) {
                             <i class="bx bx-qr-scan me-2"></i>
                             Step 2: Scan QR Code
                         </h6>
-                        <div class="alert alert-info">
+                        <div class="alert alert-info" id="qrTimingInfo">
                             <i class="bx bx-info-circle me-2"></i>
-                            Please scan the QR code displayed at the event location to complete your registration.
+                            <span id="qrTimingMessage">QR codes are only valid 1 hour before the event starts. Please scan the QR code displayed at the event location to complete your registration.</span>
                         </div>
                         
                         <div class="row">

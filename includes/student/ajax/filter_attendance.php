@@ -3,6 +3,13 @@
  * AJAX endpoint for filtering student attendance records
  */
 
+// Disable error display to prevent HTML output
+error_reporting(0);
+ini_set('display_errors', 0);
+
+// Start output buffering to prevent any accidental output
+ob_start();
+
 if (!defined('IN_APP')) {
     define('IN_APP', true);
 }
@@ -22,8 +29,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'student') {
 require_once __DIR__ . "/../../../utils/index.php";
 $con = getDatabaseConnection();
 
-// Get current student info
-$student_id = $_SESSION['user_id'];
+try {
+    // Get current student info
+    $student_id = $_SESSION['user_id'];
 
 // Get filter parameters
 $event_filter = $_GET['event'] ?? '';
@@ -210,12 +218,35 @@ if (empty($attendance_records)) {
     </div>';
 }
 
-// Return JSON response
-header('Content-Type: application/json');
-echo json_encode([
-    'success' => true,
-    'html' => $html,
-    'count' => count($attendance_records),
-    'stats' => $stats
-]);
+    // Clear any previous output
+    if (ob_get_level()) {
+        ob_clean();
+    }
+
+    // Return JSON response
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => true,
+        'html' => $html,
+        'count' => count($attendance_records),
+        'stats' => $stats
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+    
+} catch (Exception $e) {
+    error_log("Error filtering attendance: " . $e->getMessage());
+    
+    // Clear any previous output
+    if (ob_get_level()) {
+        ob_clean();
+    }
+    
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => false,
+        'message' => $e->getMessage()
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 ?>

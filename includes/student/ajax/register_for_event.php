@@ -54,8 +54,8 @@ try {
     $student_section = $stmt->get_result()->fetch_assoc();
     $student_section_id = $student_section['section_id'] ?? null;
     
-    // Check if student can access this event
-    $access_query = "SELECT e.event_id, e.event_type,
+    // Check if student can access this event and validate timing
+    $access_query = "SELECT e.event_id, e.event_type, e.event_date, e.start_time,
                             CASE 
                                 WHEN e.event_type = 'Open' THEN 1
                                 WHEN e.event_type = 'Exclusive' AND es.section_id = ? THEN 1
@@ -72,6 +72,18 @@ try {
     
     if (!$access_check || !$access_check['can_access']) {
         throw new Exception('You do not have access to this event');
+    }
+    
+    // Validate registration timing - QR codes are only valid 1 hour before event start
+    $event_datetime = $access_check['event_date'] . ' ' . $access_check['start_time'];
+    $event_timestamp = strtotime($event_datetime);
+    $current_timestamp = time();
+    $time_diff_hours = ($event_timestamp - $current_timestamp) / 3600;
+    
+    if ($time_diff_hours > 1) {
+        throw new Exception('Registration is not yet available. QR codes become valid 1 hour before the event starts.');
+    } elseif ($time_diff_hours < 0) {
+        throw new Exception('Registration is no longer available. The event has already started or passed.');
     }
     
     // Register student for the event (create attendance record)

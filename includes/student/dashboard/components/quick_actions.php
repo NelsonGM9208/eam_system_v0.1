@@ -34,10 +34,10 @@ if (!defined('IN_APP')) {
                     
                     <!-- Submit Excuse -->
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <button type="button" class="btn btn-warning btn-block h-100 d-flex flex-column align-items-center justify-content-center text-white" data-bs-toggle="modal" data-bs-target="#submitExcuseModal">
+                        <a href="?page=excuse_letter" class="btn btn-warning btn-block h-100 d-flex flex-column align-items-center justify-content-center text-white">
                             <i class="bx bx-file mb-2" style="font-size: 2rem;"></i>
                             <span>Submit Excuse</span>
-                        </button>
+                        </a>
                     </div>
                     
                     <!-- View Profile -->

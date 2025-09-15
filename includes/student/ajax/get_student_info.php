@@ -3,6 +3,13 @@
  * AJAX endpoint to get student information
  */
 
+// Disable error display to prevent HTML output
+error_reporting(0);
+ini_set('display_errors', 0);
+
+// Start output buffering to prevent any accidental output
+ob_start();
+
 if (!defined('IN_APP')) {
     define('IN_APP', true);
 }
@@ -64,16 +71,29 @@ try {
         ]
     ];
     
+    // Clear any previous output
+    if (ob_get_level()) {
+        ob_clean();
+    }
+    
     header('Content-Type: application/json');
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
+    exit;
     
 } catch (Exception $e) {
     error_log("Error getting student info: " . $e->getMessage());
     
+    // Clear any previous output
+    if (ob_get_level()) {
+        ob_clean();
+    }
+    
     http_response_code(500);
+    header('Content-Type: application/json');
     echo json_encode([
         'success' => false,
         'message' => $e->getMessage()
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
 }
 ?>

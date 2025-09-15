@@ -24,6 +24,28 @@ function initializeAttendancePage() {
 function initializeAttendanceFiltering() {
     console.log('Initializing attendance filtering');
     
+    // Check if required elements exist
+    const eventFilter = $('#event_filter');
+    const statusFilter = $('#status_filter');
+    const dateFrom = $('#date_from');
+    const dateTo = $('#date_to');
+    const clearBtn = $('#clearAttendanceFilters');
+    const exportBtn = $('#exportAttendance');
+    
+    console.log('Element check:', {
+        eventFilter: eventFilter.length,
+        statusFilter: statusFilter.length,
+        dateFrom: dateFrom.length,
+        dateTo: dateTo.length,
+        clearBtn: clearBtn.length,
+        exportBtn: exportBtn.length
+    });
+    
+    if (eventFilter.length === 0) {
+        console.error('event_filter element not found!');
+        return;
+    }
+    
     let filterTimeout;
     
     // Real-time filtering function
@@ -70,14 +92,22 @@ function initializeAttendanceFiltering() {
         });
     }
     
+    // Remove any existing event handlers to prevent duplicates
+    $('#event_filter, #status_filter, #date_from, #date_to').off('change');
+    $('#clearAttendanceFilters').off('click');
+    $('#exportAttendance').off('click');
+    
     // Debounced filtering for dropdowns and date inputs
     $('#event_filter, #status_filter, #date_from, #date_to').on('change', function() {
+        console.log('Filter changed:', $(this).attr('id'), $(this).val());
         clearTimeout(filterTimeout);
         filterTimeout = setTimeout(filterAttendance, 300);
     });
     
     // Clear filters
-    $('#clearAttendanceFilters').on('click', function() {
+    $('#clearAttendanceFilters').on('click', function(e) {
+        e.preventDefault();
+        console.log('Clear filters clicked - button found and clickable');
         $('#event_filter').val('');
         $('#status_filter').val('');
         $('#date_from').val('');
@@ -86,9 +116,14 @@ function initializeAttendanceFiltering() {
     });
     
     // Export functionality
-    $('#exportAttendance').on('click', function() {
+    $('#exportAttendance').on('click', function(e) {
+        e.preventDefault();
+        console.log('Export clicked - button found and clickable');
         exportAttendanceRecords();
     });
+    
+    // Test if buttons are actually clickable (without triggering)
+    console.log('Buttons should now be clickable');
     
     console.log('Attendance filtering initialized');
 }
@@ -137,26 +172,42 @@ function exportAttendanceRecords() {
         event: eventFilter || '',
         status: statusFilter || '',
         date_from: dateFrom || '',
-        date_to: dateTo || '',
-        format: 'excel'
+        date_to: dateTo || ''
     });
     
     const downloadUrl = `/eam_system_v0.1.1/includes/student/ajax/export_attendance.php?${params.toString()}`;
     
-    // Create temporary link and trigger download
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = `attendance_records_${new Date().toISOString().split('T')[0]}.xlsx`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Reset button state
-    setTimeout(() => {
-        exportBtn.html(originalText);
-        exportBtn.prop('disabled', false);
-        showSuccess('Attendance records exported successfully!');
-    }, 1000);
+    // Use fetch to handle the download properly
+    fetch(downloadUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Create download link
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `attendance_records_${new Date().toISOString().split('T')[0]}.html`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            // Reset button state and show success
+            exportBtn.html(originalText);
+            exportBtn.prop('disabled', false);
+            showSuccess('Attendance records exported successfully!');
+        })
+        .catch(error => {
+            console.error('Export error:', error);
+            // Reset button state and show error
+            exportBtn.html(originalText);
+            exportBtn.prop('disabled', false);
+            showError('Failed to export attendance records. Please try again.');
+        });
 }
 
 /**

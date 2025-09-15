@@ -15,7 +15,9 @@ requireRole('sslg');
   <!-- Boxicons CSS -->
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <title>SSLG Page</title>
+  <title>SANHS EAMS - SSLG Page</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://mis.sanagustinnhs.net/assets/images/sanhs_logo.png">
   <link rel="stylesheet" href="../assets/css/includes.css" />
   <link rel="stylesheet" href="../assets/css/sslg_dashboard.css" />
 </head>

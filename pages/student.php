@@ -15,7 +15,9 @@ requireRole('student');
   <!-- Boxicons CSS -->
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <title>Student Page</title>
+  <title>SANHS EAMS - Student Page</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://mis.sanagustinnhs.net/assets/images/sanhs_logo.png">
   <link rel="stylesheet" href="../assets/css/includes.css" />
 </head>
 
@@ -36,7 +38,7 @@ requireRole('student');
         'dashboard',
         'events',
         'attendance',
-        'excuse_letters',
+        'excuse_letter',
         'logout'
       ];
       $page = $_GET['page'] ?? 'dashboard';  // Default page to 'dashboard'
@@ -67,12 +69,20 @@ requireRole('student');
     <!-- Bootstrap JS + jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery Validation Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+    <!-- QR Code Scanning Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 
     <!-- JavaScript -->
     <script src="../assets/js/script.js?v=<?php echo time(); ?>"></script>
     <script src="../includes/student/dashboard/assets/student_dashboard.js?v=<?php echo time(); ?>"></script>
     <script src="../includes/student/js/events.js?v=<?php echo time(); ?>"></script>
     <script src="../includes/student/js/attendance.js?v=<?php echo time(); ?>"></script>
+    <script src="../includes/student/js/excuse_letter.js?v=<?php echo time(); ?>"></script>
 
 </body>
 

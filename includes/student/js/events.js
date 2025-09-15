@@ -250,11 +250,40 @@ function setupRegistrationModal(event) {
     $('#registrationEventTime').text(`${formatTime(event.start_time)} - ${formatTime(event.end_time)}`);
     $('#registrationEventLocation').text(event.location);
     
+    // Update timing information
+    updateQRTimingInfo(event);
+    
     // Set student info (you'll need to get this from session or AJAX)
     loadStudentInfo();
     
     // Reset to step 1
     showStep(1);
+}
+
+/**
+ * Update QR timing information based on current time
+ */
+function updateQRTimingInfo(event) {
+    const now = new Date();
+    const eventDate = new Date(event.event_date + ' ' + event.start_time);
+    const timeDiffHours = (eventDate - now) / (1000 * 60 * 60);
+    
+    let timingMessage = '';
+    let alertClass = 'alert-info';
+    
+    if (timeDiffHours > 1) {
+        timingMessage = `QR codes will become valid in ${Math.ceil(timeDiffHours)} hours (1 hour before the event starts).`;
+        alertClass = 'alert-warning';
+    } else if (timeDiffHours <= 1 && timeDiffHours >= 0) {
+        timingMessage = 'QR codes are now valid! You can scan the QR code to register for this event.';
+        alertClass = 'alert-success';
+    } else {
+        timingMessage = 'Registration is no longer available. The event has already started or passed.';
+        alertClass = 'alert-danger';
+    }
+    
+    $('#qrTimingMessage').text(timingMessage);
+    $('#qrTimingInfo').removeClass('alert-info alert-warning alert-success alert-danger').addClass(alertClass);
 }
 
 /**
@@ -394,16 +423,54 @@ function stopCamera() {
  * Initialize QR code scanner
  */
 function initializeQRScanner() {
-    // This would integrate with a QR code scanning library
-    // For now, we'll simulate the process
-    
     console.log('QR Scanner initialized');
     
-    // Simulate QR code detection after 3 seconds
-    setTimeout(() => {
-        // In real implementation, this would be triggered by actual QR code detection
-        // processQRCode('EVENT_' + currentEventId + '_' + Date.now());
-    }, 3000);
+    const video = document.getElementById('cameraPreview');
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    
+    // Set canvas dimensions to match video
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    
+    // Start scanning loop
+    function scanQRCode() {
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            // Draw video frame to canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Get image data
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            
+            // Try to decode QR code
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
+            
+            if (code) {
+                console.log('QR Code detected:', code.data);
+                processQRCode(code.data);
+                return; // Stop scanning once QR code is found
+            }
+        }
+        
+        // Continue scanning if no QR code found
+        if (cameraStream && !cameraStream.getVideoTracks()[0].muted) {
+            requestAnimationFrame(scanQRCode);
+        }
+    }
+    
+    // Start scanning when video is ready
+    video.addEventListener('loadedmetadata', () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        scanQRCode();
+    });
+    
+    // Also start scanning immediately in case video is already loaded
+    if (video.readyState >= video.HAVE_METADATA) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        scanQRCode();
+    }
 }
 
 /**
@@ -411,6 +478,9 @@ function initializeQRScanner() {
  */
 function processQRCode(qrData) {
     console.log('Processing QR code:', qrData);
+    
+    // Stop camera scanning once QR code is detected
+    stopCamera();
     
     // Validate QR code format: EVENT_{EVENT_ID}_{TIMESTAMP}
     if (qrData.startsWith('EVENT_')) {
@@ -432,17 +502,61 @@ function processQRCode(qrData) {
                     return;
                 }
                 
-                // Valid QR code, proceed with registration
-                completeRegistration();
+                // Check if registration is allowed at this time
+                validateRegistrationTiming(eventIdFromQR, () => {
+                    // Valid QR code and timing, proceed with registration
+                    completeRegistration();
+                });
             } else {
-                showError('Invalid QR code for this event.');
+                showError('Invalid QR code for this event. This QR code is for a different event.');
             }
         } else {
-            showError('Invalid QR code format.');
+            showError('Invalid QR code format. Expected format: EVENT_[ID]_[TIMESTAMP]');
         }
     } else {
         showError('Invalid QR code format. QR code must start with "EVENT_".');
     }
+}
+
+/**
+ * Validate registration timing - check if QR code is valid within 1 hour before event start
+ */
+function validateRegistrationTiming(eventId, callback) {
+    // Get event details to check timing
+    $.ajax({
+        url: '/eam_system_v0.1.1/includes/student/ajax/get_event_details.php',
+        method: 'GET',
+        data: { event_id: eventId },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                const event = response.event;
+                const now = new Date();
+                const eventDate = new Date(event.event_date + ' ' + event.start_time);
+                
+                // Calculate time difference in hours
+                const timeDiffHours = (eventDate - now) / (1000 * 60 * 60);
+                
+                // Check if we're within 1 hour before event start
+                if (timeDiffHours <= 1 && timeDiffHours >= 0) {
+                    // Valid timing - within 1 hour before event
+                    callback();
+                } else if (timeDiffHours > 1) {
+                    // Too early - more than 1 hour before event
+                    showError(`Registration is not yet available. QR codes become valid 1 hour before the event starts. Event starts in ${Math.ceil(timeDiffHours)} hours.`);
+                } else {
+                    // Too late - event has already started or passed
+                    showError('Registration is no longer available. The event has already started or passed.');
+                }
+            } else {
+                showError('Failed to validate event timing: ' + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error validating event timing:', error);
+            showError('Error validating event timing. Please try again.');
+        }
+    });
 }
 
 /**
@@ -452,6 +566,8 @@ function processManualQR() {
     const manualCode = $('#manualQRCode').val().trim();
     
     if (manualCode) {
+        // Stop camera if running
+        stopCamera();
         processQRCode(manualCode);
     } else {
         showError('Please enter a QR code.');

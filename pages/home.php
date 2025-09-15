@@ -103,7 +103,10 @@ function getUserDisplayName($user) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo sanitizeOutput(getUserDisplayName($user)); ?> | Home - EAMS</title>
+    <title>SANHS EAMS - <?php echo sanitizeOutput(getUserDisplayName($user)); ?> | Home</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://mis.sanagustinnhs.net/assets/images/sanhs_logo.png">
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">

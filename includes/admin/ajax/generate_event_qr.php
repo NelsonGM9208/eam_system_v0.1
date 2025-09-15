@@ -80,13 +80,12 @@ try {
         exit;
         
     } elseif ($format === 'pdf') {
-        // Return PDF
-        $writer = new PdfWriter();
+        // Generate PDF using mPDF
+        $writer = new PngWriter();
         $result = $writer->write($qrCode);
+        $qr_image_data = $result->getString();
         
-        header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="event_' . $event_id . '_qr.pdf"');
-        echo $result->getString();
+        generateQrCodePdf($qr_image_data, $event['title'], 'D');
         exit;
         
     } else {

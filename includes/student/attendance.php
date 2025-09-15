@@ -402,10 +402,30 @@ $available_events = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 <!-- Initialize attendance page when loaded -->
 <script>
-// Initialize the attendance page when this content is loaded
-if (typeof initializeAttendancePage === 'function') {
-    initializeAttendancePage();
-} else {
-    console.log('initializeAttendancePage function not available yet');
+// Wait for jQuery to be available
+function waitForJQuery() {
+    if (typeof $ !== 'undefined') {
+        console.log('jQuery is available, initializing attendance page...');
+        
+        // Wait for DOM to be ready and then initialize
+        $(document).ready(function() {
+            console.log('Document ready, initializing attendance page...');
+            
+            // Check if the function exists
+            if (typeof initializeAttendancePage === 'function') {
+                console.log('initializeAttendancePage function found, calling it...');
+                initializeAttendancePage();
+            } else {
+                console.error('initializeAttendancePage function not found!');
+                console.log('Available functions:', Object.keys(window).filter(key => typeof window[key] === 'function'));
+            }
+        });
+    } else {
+        console.log('jQuery not yet available, waiting...');
+        setTimeout(waitForJQuery, 100);
+    }
 }
+
+// Start waiting for jQuery
+waitForJQuery();
 </script>

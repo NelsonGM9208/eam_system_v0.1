@@ -34,6 +34,7 @@ node_modules/
 *.sqlite3
 database_backups/
 backups/
+database_schema/
 
 # Environment and configuration files
 .env
@@ -43,6 +44,7 @@ backups/
 config.php
 database.php
 settings.php
+utils/database.php
 
 # Upload directories (user content)
 uploads/
@@ -51,6 +53,8 @@ documents/
 images/
 videos/
 attachments/
+includes/uploads/
+includes/student/uploads/
 
 # Cache and temporary directories
 cache/

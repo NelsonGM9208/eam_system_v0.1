@@ -9,7 +9,8 @@ if($email == false){
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create a New Password</title>
+    <title>SANHS EAMS - Create a New Password</title>
+    <link rel="icon" type="image/png" href="https://mis.sanagustinnhs.net/assets/images/sanhs_logo.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/auth_styles.css">
     <link rel="stylesheet" href="assets/css/includes.css">
