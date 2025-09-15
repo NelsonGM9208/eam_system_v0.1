@@ -18,6 +18,8 @@ require_once __DIR__ . '/errors.php';      // Error handling first
 require_once __DIR__ . '/security.php';    // Security utilities
 require_once __DIR__ . '/database.php';    // Database operations (needs logError)
 require_once __DIR__ . '/pagination.php';  // Pagination utilities
+require_once __DIR__ . '/pdf.php';
+require_once __DIR__ . '/auto_absent.php';         // PDF generation utilities
 require_once __DIR__ . '/ui.php';          // UI utilities
 require_once __DIR__ . '/date_utils.php';  // Date and time utilities
 require_once __DIR__ . '/email.php';       // Email utilities

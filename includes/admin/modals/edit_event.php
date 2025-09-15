@@ -151,11 +151,23 @@ if ($event['event_type'] == 'Exclusive') {
       </div>
     </div>
     
-    <div class="form-group">
-      <label for="editAbsPenalty">Absence Penalty</label>
-      <input type="number" class="form-control" id="editAbsPenalty" name="abs_penalty" 
-             min="0" step="0.01" value="<?php echo $event['abs_penalty'] ?? 0; ?>" 
-             placeholder="Penalty amount in pesos (₱)">
+    <div class="row">
+      <div class="col-md-6 col-sm-12 mb-3">
+        <div class="form-group">
+          <label for="editAbsPenalty">Absence Penalty (₱)</label>
+          <input type="number" class="form-control" id="editAbsPenalty" name="abs_penalty" 
+                 min="0" step="0.01" value="<?php echo $event['abs_penalty'] ?? 0; ?>" 
+                 placeholder="Penalty amount in pesos">
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12 mb-3">
+        <div class="form-group">
+          <label for="editGracePeriod">Grace Period (Hours)</label>
+          <input type="number" class="form-control" id="editGracePeriod" name="grace_period_hours" 
+                 min="0" max="168" value="<?php echo $event['grace_period_hours'] ?? 24; ?>">
+          <small class="form-text text-muted">Hours after event ends before auto-marking absent students</small>
+        </div>
+      </div>
     </div>
     
     <!-- Section Selection for Exclusive Events -->

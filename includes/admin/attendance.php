@@ -322,29 +322,44 @@ $remarks = ['Present', 'Late', 'Absent', 'Excused'];
                     <div class="form-group">
                         <label for="exportFormat">Export Format</label>
                         <select class="form-control" id="exportFormat" name="format" required>
-                            <option value="csv">CSV (Excel Compatible)</option>
-                            <option value="pdf">PDF Report</option>
+                            <option value="pdf" selected>PDF Report</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="exportDateFrom">Date From</label>
-                        <input type="date" class="form-control" id="exportDateFrom" name="date_from" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="exportDateTo">Date To</label>
-                        <input type="date" class="form-control" id="exportDateTo" name="date_to" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="exportGrade">Grade (Optional)</label>
-                        <select class="form-control" id="exportGrade" name="grade">
-                            <option value="">All Grades</option>
-                            <?php if ($grades): ?>
-                                <?php foreach ($grades as $grade): ?>
-                                    <option value="<?php echo htmlspecialchars($grade['grade']); ?>">
-                                        Grade <?php echo htmlspecialchars($grade['grade']); ?>
+                        <label for="exportEvent">Event (Optional)</label>
+                        <select class="form-control" id="exportEvent" name="event">
+                            <option value="">All Events</option>
+                            <?php if ($events): ?>
+                                <?php foreach ($events as $event): ?>
+                                    <option value="<?php echo $event['event_id']; ?>">
+                                        <?php echo htmlspecialchars($event['title']); ?> (<?php echo date('M d, Y', strtotime($event['event_date'])); ?>)
                                     </option>
                                 <?php endforeach; ?>
                             <?php endif; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exportClass">Class (Optional)</label>
+                        <select class="form-control" id="exportClass" name="class">
+                            <option value="">All Classes</option>
+                            <?php if ($classes): ?>
+                                <?php foreach ($classes as $class): ?>
+                                    <option value="<?php echo $class['section_id']; ?>">
+                                        Grade <?php echo htmlspecialchars($class['grade']); ?> - <?php echo htmlspecialchars($class['section']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exportRemarks">Include Remarks (Optional)</label>
+                        <select class="form-control" id="exportRemarks" name="remarks">
+                            <option value="all">All Remarks</option>
+                            <option value="present">Present Only</option>
+                            <option value="absent">Absent Only</option>
+                            <option value="late">Late Only</option>
+                            <option value="excused">Excused Only</option>
+                            <option value="none">No Remarks</option>
                         </select>
                     </div>
                 </form>

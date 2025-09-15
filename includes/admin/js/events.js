@@ -9,6 +9,9 @@ $(document).ready(function() {
     // Initialize QR code generation functionality
     initializeQRCodeGeneration();
     
+    // Initialize auto-absent processing functionality
+    initializeAutoAbsentProcessing();
+    
     // Auto-update event statuses on page load (silently)
     autoUpdateEventStatuses();
     
@@ -211,18 +214,43 @@ function displayQRCode(data) {
 function downloadQRCode(eventId, format) {
     console.log(`Downloading QR code for event ${eventId} in ${format} format`);
     
+    // Find and update the download button to show loading state
+    const downloadBtn = $(`[onclick="downloadQRCode(${eventId}, '${format}')"]`);
+    const originalText = downloadBtn.html();
+    downloadBtn.html('<i class="bx bx-loader-alt bx-spin"></i> Downloading...').prop('disabled', true);
+    
     // Create download URL
     const downloadUrl = `../includes/admin/ajax/generate_event_qr.php?event_id=${eventId}&format=${format}`;
     
-    // Create temporary link and trigger download
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = `event_${eventId}_qr.${format}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    showSuccess(`QR code downloaded as ${format.toUpperCase()}`);
+    // Use fetch to handle the download properly
+    fetch(downloadUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Create download link
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `event_${eventId}_qr.${format}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            // Reset button state and show success
+            downloadBtn.html(originalText).prop('disabled', false);
+            showSuccess(`QR code downloaded as ${format.toUpperCase()}`);
+        })
+        .catch(error => {
+            console.error('QR code download error:', error);
+            // Reset button state and show error
+            downloadBtn.html(originalText).prop('disabled', false);
+            showError('Failed to download QR code. Please try again.');
+        });
 }
 
 /**
@@ -254,7 +282,7 @@ function printQRCode() {
     printWindow.document.write(`
         <html>
             <head>
-                <title>Event QR Code</title>
+                <title>SANHS EAMS - Event QR Code</title>
                 <style>
                     body { font-family: Arial, sans-serif; margin: 20px; }
                     .qr-print-container { text-align: center; }
@@ -398,4 +426,220 @@ function showNotification(message, type = 'info') {
     setTimeout(() => {
         notification.alert('close');
     }, 5000);
+}
+
+/**
+ * Initialize auto-absent processing functionality
+ */
+function initializeAutoAbsentProcessing() {
+    // Handle auto-absent processing button clicks
+    $(document).on('click', '.process-auto-absent-btn', function() {
+        const eventId = $(this).data('event-id');
+        const isProcessed = $(this).data('processed') == 1;
+        
+        if (isProcessed) {
+            showNotification('info', 'Auto-absent has already been processed for this event.');
+            return;
+        }
+        
+        // Check grace period status first, then show confirmation modal
+        checkGracePeriodStatus(eventId);
+    });
+}
+
+/**
+ * Check grace period status before showing confirmation modal
+ */
+function checkGracePeriodStatus(eventId) {
+    // Show loading state
+    showNotification('info', 'Checking grace period status...');
+    
+    const formData = new FormData();
+    formData.append('action', 'check_grace_period');
+    formData.append('event_id', eventId);
+    
+    $.ajax({
+        url: '/eam_system_v0.1.1/includes/admin/ajax/process_auto_absent.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            let data;
+            if (typeof response === 'object') {
+                data = response;
+            } else {
+                data = JSON.parse(response);
+            }
+            
+            if (data.success) {
+                showAutoAbsentConfirmation(eventId, data.grace_period_info);
+            } else {
+                showNotification('error', data.message);
+            }
+        },
+        error: function() {
+            // If grace period check fails, show modal anyway
+            showAutoAbsentConfirmation(eventId, null);
+        }
+    });
+}
+
+/**
+ * Show auto-absent processing confirmation modal
+ */
+function showAutoAbsentConfirmation(eventId, gracePeriodInfo = null) {
+    const modalHtml = `
+        <div class="modal fade" id="autoAbsentModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="bx bx-user-x"></i> Process Auto-Absent
+                        </h5>
+                        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <i class="bx bx-info-circle"></i>
+                            <strong>Auto-Absent Processing</strong><br>
+                            This will automatically mark students as absent who:
+                            <ul class="mb-0 mt-2">
+                                <li>Did not check in to the event</li>
+                                <li>Do not have approved excuse letters</li>
+                                <li>Are eligible based on event type (Open/Exclusive)</li>
+                            </ul>
+                        </div>
+                        
+                        ${gracePeriodInfo && !gracePeriodInfo.expired ? `
+                        <div class="alert alert-warning">
+                            <i class="bx bx-time"></i>
+                            <strong>Grace Period Active</strong><br>
+                            Grace period expires in ${gracePeriodInfo.remaining_time}. 
+                            <br><small>You can force processing now if needed.</small>
+                        </div>
+                        ` : ''}
+                        
+                        <p>Are you sure you want to process auto-absent for this event?</p>
+                        
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="forceProcess">
+                            <label class="form-check-label" for="forceProcess">
+                                <strong>Force processing now</strong> (ignore grace period)
+                                <small class="form-text text-muted">Use this if you need to process immediately, even if the grace period hasn't expired.</small>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="confirmAutoAbsent" data-event-id="${eventId}">
+                            <i class="bx bx-user-x"></i> 
+                            ${gracePeriodInfo && !gracePeriodInfo.expired ? 'Force Process Now' : 'Process Auto-Absent'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    $('#autoAbsentModal').remove();
+    
+    // Add modal to body
+    $('body').append(modalHtml);
+    
+    // Show modal
+    $('#autoAbsentModal').modal('show');
+    
+    // Handle confirm button click
+    $('#confirmAutoAbsent').on('click', function() {
+        const eventId = $(this).data('event-id');
+        const force = $('#forceProcess').is(':checked');
+        processAutoAbsent(eventId, force);
+    });
+}
+
+/**
+ * Process auto-absent for a specific event
+ */
+function processAutoAbsent(eventId, force = false) {
+    const $btn = $('#confirmAutoAbsent');
+    const originalText = $btn.html();
+    
+    // Show loading state
+    $btn.html('<i class="bx bx-loader-alt bx-spin"></i> Processing...').prop('disabled', true);
+    
+    // Prepare form data
+    const formData = new FormData();
+    formData.append('action', 'process_event');
+    formData.append('event_id', eventId);
+    formData.append('force', force ? '1' : '0');
+    
+    $.ajax({
+        url: '/eam_system_v0.1.1/includes/admin/ajax/process_auto_absent.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log('Raw response:', response);
+            console.log('Response type:', typeof response);
+            
+            try {
+                // If response is already an object, use it directly
+                let data;
+                if (typeof response === 'object') {
+                    data = response;
+                } else {
+                    data = JSON.parse(response);
+                }
+                
+                console.log('Parsed data:', data);
+                
+                if (data.success) {
+                    // Show more informative success messages
+                    if (data.message.includes('No students to mark absent')) {
+                        showNotification('success', '✅ All students are accounted for - no absent records needed.');
+                    } else if (data.message.includes('Successfully created')) {
+                        showNotification('success', '✅ ' + data.message);
+                    } else {
+                        showNotification('success', data.message);
+                    }
+                    
+                    // Update the button state in the table
+                    const $tableBtn = $(`.process-auto-absent-btn[data-event-id="${eventId}"]`);
+                    $tableBtn.removeClass('btn-primary').addClass('btn-secondary');
+                    $tableBtn.find('i').removeClass('bx-user-x').addClass('bx-check');
+                    $tableBtn.attr('title', 'Auto-absent already processed');
+                    $tableBtn.data('processed', 1);
+                    
+                    // Close modal
+                    $('#autoAbsentModal').modal('hide');
+                } else {
+                    // Handle specific error cases with user-friendly messages
+                    if (data.message.includes('Grace period has not expired')) {
+                        showNotification('warning', 'Grace period is still active. Check "Force processing now" to process immediately.');
+                    } else if (data.message.includes('already processed')) {
+                        showNotification('info', 'Auto-absent has already been processed for this event.');
+                    } else if (data.message.includes('No students to mark absent')) {
+                        showNotification('success', 'All students are accounted for - no absent records needed.');
+                    } else {
+                        showNotification('error', data.message);
+                    }
+                }
+            } catch (e) {
+                console.error('Error parsing response:', e);
+                console.error('Response that failed to parse:', response);
+                showNotification('error', 'An error occurred while processing auto-absent: ' + e.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Auto-absent processing error:', error);
+            showNotification('error', 'Failed to process auto-absent. Please try again.');
+        },
+        complete: function() {
+            // Reset button state
+            $btn.html(originalText).prop('disabled', false);
+        }
+    });
 }

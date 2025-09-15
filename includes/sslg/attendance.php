@@ -322,8 +322,7 @@ $remarks = ['Present', 'Late', 'Absent', 'Excused'];
                     <div class="form-group">
                         <label for="exportFormat">Export Format</label>
                         <select class="form-control" id="exportFormat" name="format" required>
-                            <option value="csv">CSV (Excel Compatible)</option>
-                            <option value="pdf">PDF Report</option>
+                            <option value="pdf" selected>PDF Report</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -340,19 +339,6 @@ $remarks = ['Present', 'Late', 'Absent', 'Excused'];
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="exportGrade">Grade (Optional)</label>
-                        <select class="form-control" id="exportGrade" name="grade">
-                            <option value="">All Grades</option>
-                            <?php if ($grades): ?>
-                                <?php foreach ($grades as $grade): ?>
-                                    <option value="<?php echo htmlspecialchars($grade['grade']); ?>">
-                                        Grade <?php echo htmlspecialchars($grade['grade']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <label for="exportClass">Class (Optional)</label>
                         <select class="form-control" id="exportClass" name="class">
                             <option value="">All Classes</option>
@@ -363,6 +349,17 @@ $remarks = ['Present', 'Late', 'Absent', 'Excused'];
                                     </option>
                                 <?php endforeach; ?>
                             <?php endif; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exportRemarks">Include Remarks (Optional)</label>
+                        <select class="form-control" id="exportRemarks" name="remarks">
+                            <option value="all">All Remarks</option>
+                            <option value="present">Present Only</option>
+                            <option value="absent">Absent Only</option>
+                            <option value="late">Late Only</option>
+                            <option value="excused">Excused Only</option>
+                            <option value="none">No Remarks</option>
                         </select>
                     </div>
                 </form>

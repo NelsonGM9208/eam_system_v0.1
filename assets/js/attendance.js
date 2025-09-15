@@ -63,6 +63,22 @@ function bindAttendanceEvents() {
         exportAttendance();
     });
     
+    // Reset export button when modal is closed
+    $('#exportModal').on('hidden.bs.modal', function() {
+        console.log('Export modal closed - resetting button state');
+        const $exportBtn = $('#confirmExport');
+        const originalText = '<i class="bx bx-download"></i> Export';
+        $exportBtn.html(originalText).prop('disabled', false);
+    });
+    
+    // Ensure export button is in correct state when modal is opened
+    $('#exportModal').on('show.bs.modal', function() {
+        console.log('Export modal opened - ensuring button is in correct state');
+        const $exportBtn = $('#confirmExport');
+        const originalText = '<i class="bx bx-download"></i> Export';
+        $exportBtn.html(originalText).prop('disabled', false);
+    });
+    
     // View attendance modal
     $(document).on('click', '.view-attendance-btn', function() {
         const attendanceId = $(this).data('attendance-id');
@@ -331,27 +347,34 @@ function showExportModal() {
  */
 function exportAttendance() {
     const format = $('#exportFormat').val();
-    const dateFrom = $('#exportDateFrom').val();
-    const dateTo = $('#exportDateTo').val();
-    const grade = $('#exportGrade').val();
+    const event = $('#exportEvent').val();
+    const classId = $('#exportClass').val();
+    const remarks = $('#exportRemarks').val();
     
-    if (!format) {
-        showAlert('error', 'Please select an export format');
-        return;
-    }
+    // Format is always PDF now
     
     // Show loading state
     const $exportBtn = $('#confirmExport');
     const originalText = $exportBtn.html();
     $exportBtn.html('<i class="bx bx-loader-alt bx-spin"></i> Exporting...').prop('disabled', true);
     
+    // Set a timeout to ensure button gets reset even if AJAX fails
+    const resetTimeout = setTimeout(function() {
+        console.log('Timeout reached - forcing button reset');
+        if ($exportBtn && $exportBtn.length > 0) {
+            $exportBtn.html(originalText).prop('disabled', false);
+        } else {
+            $('#confirmExport').html(originalText).prop('disabled', false);
+        }
+    }, 30000); // 30 second timeout
+    
     // Create form data
     const formData = new FormData();
     formData.append('action', 'export_attendance');
     formData.append('format', format);
-    formData.append('date_from', dateFrom);
-    formData.append('date_to', dateTo);
-    formData.append('grade', grade);
+    formData.append('event', event);
+    formData.append('class', classId);
+    formData.append('remarks', remarks);
     
     // Submit export request
     $.ajax({
@@ -364,39 +387,84 @@ function exportAttendance() {
             responseType: 'blob'
         },
         success: function(data, status, xhr) {
-            // Get filename from response headers
-            const filename = xhr.getResponseHeader('Content-Disposition');
-            let downloadFilename = 'attendance_export.' + format;
+            // Check if response is actually a PDF or an error
+            const contentType = xhr.getResponseHeader('Content-Type');
             
-            if (filename) {
-                const matches = filename.match(/filename="(.+)"/);
-                if (matches) {
-                    downloadFilename = matches[1];
+            if (contentType && contentType.includes('application/pdf')) {
+                // Successfully generated PDF
+                const filename = xhr.getResponseHeader('Content-Disposition');
+                let downloadFilename = 'attendance_report_' + new Date().toISOString().split('T')[0] + '.pdf';
+                
+                if (filename) {
+                    const matches = filename.match(/filename="(.+)"/);
+                    if (matches) {
+                        downloadFilename = matches[1];
+                    }
                 }
+                
+                // Create download link
+                const blob = new Blob([data], { type: 'application/pdf' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = downloadFilename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                // Close modal and show success message
+                console.log('PDF download completed successfully');
+                $('#exportModal').modal('hide');
+                showAlert('success', 'Attendance data exported successfully!');
+            } else {
+                // Response is not a PDF, might be an error message
+                const reader = new FileReader();
+                reader.onload = function() {
+                    console.log('Processing non-PDF response');
+                    try {
+                        const response = JSON.parse(reader.result);
+                        console.log('Parsed response:', response);
+                        if (response.success === false) {
+                            showAlert('error', response.message || 'Failed to export attendance data');
+                        } else {
+                            showAlert('error', 'Unexpected response format');
+                        }
+                    } catch (e) {
+                        console.error('Error parsing response:', e);
+                        showAlert('error', 'Failed to export attendance data');
+                    }
+                };
+                reader.readAsText(data);
             }
-            
-            // Create download link
-            const blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = downloadFilename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-            
-            // Close modal and show success message
-            $('#exportModal').modal('hide');
-            showAlert('success', 'Attendance data exported successfully!');
         },
         error: function(xhr, status, error) {
             console.error('Export error:', error);
             showAlert('error', 'Failed to export attendance data');
         },
         complete: function() {
+            // Clear the timeout since AJAX completed
+            clearTimeout(resetTimeout);
+            
             // Restore button state
-            $exportBtn.html(originalText).prop('disabled', false);
+            console.log('Export complete - resetting button state');
+            console.log('Export button element:', $exportBtn);
+            console.log('Original text:', originalText);
+            
+            // Ensure we have the button element
+            if ($exportBtn && $exportBtn.length > 0) {
+                $exportBtn.html(originalText).prop('disabled', false);
+                console.log('Button state reset successfully');
+            } else {
+                // Fallback: find the button by ID
+                const fallbackBtn = $('#confirmExport');
+                if (fallbackBtn.length > 0) {
+                    fallbackBtn.html(originalText).prop('disabled', false);
+                    console.log('Button state reset using fallback method');
+                } else {
+                    console.error('Could not find export button to reset');
+                }
+            }
         }
     });
 }

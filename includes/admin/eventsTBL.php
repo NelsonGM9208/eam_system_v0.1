@@ -215,6 +215,21 @@ if ($total_records > 0) {
                                                 </button>";
                                         }
                                         
+                                        // Add Auto-Absent button for finished events
+                                        if ($status === 'Finished') {
+                                            $autoProcessed = $row['auto_absent_processed'] ?? 0;
+                                            $buttonClass = $autoProcessed ? 'btn-secondary' : 'btn-primary';
+                                            $buttonTitle = $autoProcessed ? 'Auto-absent already processed' : 'Process Auto-Absent';
+                                            $buttonIcon = $autoProcessed ? 'bx-check' : 'bx-user-x';
+                                            
+                                            echo "<button type='button' class='btn $buttonClass btn-sm process-auto-absent-btn' 
+                                                    data-event-id='$event_id' 
+                                                    data-processed='$autoProcessed'
+                                                    title='$buttonTitle'>
+                                                    <i class='bx $buttonIcon'></i>
+                                                </button>";
+                                        }
+                                        
                                         echo "<button type='button' class='btn btn-danger btn-sm delete-event-btn' 
                                                 data-event-id='$event_id' title='Delete Event'>
                                                 <i class='bx bx-trash'></i>
@@ -327,12 +342,22 @@ if ($total_records > 0) {
                             <label for="eventLocation">Location *</label>
                             <input type="text" class="form-control" id="eventLocation" name="location" required>
                         </div>
-                    
-                    <div class="form-group">
-                        <label for="absPenalty">Absence Penalty</label>
-                        <input type="number" class="form-control" id="absPenalty" name="abs_penalty" 
-                               min="0" step="0.01" placeholder="Penalty amount in pesos (₱)">
-                    </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12 mb-3">
+                                <div class="form-group">
+                                    <label for="absPenalty">Absence Penalty (₱)</label>
+                                    <input type="number" class="form-control" id="absPenalty" name="abs_penalty" value="100" min="0">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12 mb-3">
+                                <div class="form-group">
+                                    <label for="gracePeriod">Grace Period (Hours)</label>
+                                    <input type="number" class="form-control" id="gracePeriod" name="grace_period_hours" value="24" min="0" max="168">
+                                    <small class="form-text text-muted">Hours after event ends before auto-marking absent students</small>
+                                </div>
+                            </div>
+                        </div>
                     
                     <!-- Section Selection for Exclusive Events -->
                     <div class="form-group" id="sectionSelectionGroup" style="display: none;">
